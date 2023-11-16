@@ -150,11 +150,8 @@
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">mutate!</span>(<span class="ruby-value">probability:</span> <span class="ruby-constant">T</span><span class="ruby-operator">::</span><span class="ruby-constant">Genetics</span><span class="ruby-operator">::</span><span class="ruby-constant">MUTATION_RATE</span>)
   <span class="ruby-keyword">return</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">rand</span> <span class="ruby-operator">&lt;</span> <span class="ruby-identifier">probability</span>
 
-  <span class="ruby-identifier">mutation_result</span> = <span class="ruby-keyword">if</span> <span class="ruby-ivar">@mutate_function</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Symbol</span>)
-                      <span class="ruby-ivar">@chromosome</span>.<span class="ruby-identifier">send</span>(<span class="ruby-ivar">@mutate_function</span>)
-                    <span class="ruby-keyword">end</span>
-
-  <span class="ruby-ivar">@chromosome</span>.<span class="ruby-identifier">send</span>(<span class="ruby-node">&quot;#{@name}=&quot;</span>, <span class="ruby-identifier">mutation_result</span>)
+  <span class="ruby-ivar">@chromosome</span>.<span class="ruby-identifier">send</span>(<span class="ruby-node">&quot;#{@name}=&quot;</span>, <span class="ruby-ivar">@chromosome</span>.<span class="ruby-identifier">send</span>(<span class="ruby-ivar">@mutate_function</span>))
+  <span class="ruby-ivar">@chromosome</span>.<span class="ruby-identifier">save</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
         </div>

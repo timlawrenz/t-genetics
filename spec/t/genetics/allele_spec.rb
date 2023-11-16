@@ -36,7 +36,8 @@ RSpec.describe T::Genetics::Allele do
 
   describe 'mutation' do
     before do
-      allow(chromosome).to receive(:randomize_number_of_legs)
+      allow(chromosome).to receive(:randomize_number_of_legs).and_return(6)
+      allow(chromosome).to receive(:save)
     end
 
     it 'can mutate' do
@@ -46,6 +47,16 @@ RSpec.describe T::Genetics::Allele do
     it 'calls the mutation function when it mutates' do
       allele.mutate!(probability: 1)
       expect(chromosome).to have_received(:randomize_number_of_legs)
+    end
+
+    it 'sets the attribute to the random value' do
+      allele.mutate!(probability: 1)
+      expect(chromosome.number_of_wings).to eq(6)
+    end
+
+    it 'saves the chromosome' do
+      allele.mutate!(probability: 1)
+      expect(chromosome).to have_received(:save)
     end
   end
 end

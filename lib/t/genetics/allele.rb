@@ -13,11 +13,8 @@ module T
       def mutate!(probability: T::Genetics::MUTATION_RATE)
         return unless rand < probability
 
-        mutation_result = if @mutate_function.is_a?(Symbol)
-                            @chromosome.send(@mutate_function)
-                          end
-
-        @chromosome.send("#{@name}=", mutation_result)
+        @chromosome.send("#{@name}=", @chromosome.send(@mutate_function))
+        @chromosome.save
       end
     end
   end
