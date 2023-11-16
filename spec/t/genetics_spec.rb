@@ -23,7 +23,7 @@ RSpec.describe T::Genetics do
     end
 
     it 'can remember allele' do
-      expect(BaseChromosome.instance_variable_get(:@alleles)).to include(:number_of_legs)
+      expect(BaseChromosome.instance_variable_get(:@alleles).first).to be_a(T::Genetics::Allele)
     end
   end
 end

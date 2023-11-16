@@ -10,12 +10,9 @@ module T
       end
 
       module ClassMethods
-        ##
-        # Defines a mutatable, inheritable characteristic of the Chromosome
-        #
         def allele(name, mutate:, crossover:)
           @alleles ||= []
-          @alleles << name
+          @alleles << Allele.new(name, mutate:, crossover:)
         end
       end
     end

@@ -103,13 +103,13 @@
         </div>
 
         <div class="method-description">
-          <p>Defines a mutatable, inheritable characteristic of the <a href="../Chromosome.html"><code>Chromosome</code></a></p>
+          
 
           <div class="method-source-code" id="allele-source">
-            <pre><span class="ruby-comment"># File lib/t/genetics/chromosome.rb, line 16</span>
+            <pre><span class="ruby-comment"># File lib/t/genetics/chromosome.rb, line 13</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">allele</span>(<span class="ruby-identifier">name</span>, <span class="ruby-value">mutate:</span>, <span class="ruby-value">crossover:</span>)
   <span class="ruby-ivar">@alleles</span> <span class="ruby-operator">||=</span> []
-  <span class="ruby-ivar">@alleles</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">name</span>
+  <span class="ruby-ivar">@alleles</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-constant">Allele</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">name</span>, <span class="ruby-value">mutate:</span>, <span class="ruby-value">crossover:</span>)
 <span class="ruby-keyword">end</span></pre>
           </div>
         </div>

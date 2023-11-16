@@ -3,6 +3,7 @@
 require 'active_record'
 require 'rails/railtie'
 
+require 't/genetics/allele'
 require 't/genetics/chromosome'
 require 't/genetics/version'
 
