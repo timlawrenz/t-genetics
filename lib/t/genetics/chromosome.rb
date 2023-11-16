@@ -12,7 +12,7 @@ module T
       module ClassMethods
         def allele(name, mutate:, crossover:)
           @alleles ||= []
-          @alleles << Allele.new(name, mutate:, crossover:)
+          @alleles << Allele.new(name, mutate:, crossover:, chromosome: self)
         end
       end
     end
