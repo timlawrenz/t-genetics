@@ -1,23 +1,24 @@
-# t-genetics
+# README
 
-## Allele
+This README would normally document whatever steps are necessary to get the
+application up and running.
 
-A chromosome has many Alleles that define its characteristics.
+Things you may want to cover:
 
-```ruby
-class Bird < ActiveRecord::Base
-  include T::Genetics
+* Ruby version
 
-  allele :number_of_legs, mutate: :random_number_of_legs, crossover: T::Genetics::Crossover::RandomSwitch
-  allele :number_of_wings, mutate: :random_number_of_wings, crossover: T::Genetics::Crossover::Average
+* System dependencies
 
-  private
+* Configuration
 
-  def random_number_of_legs
-    [0..10].sample
-  end
+* Database creation
 
-  def random_number_of_wings
-    [1..5].sample
-  end
-end
+* Database initialization
+
+* How to run the test suite
+
+* Services (job queues, cache servers, search engines, etc.)
+
+* Deployment instructions
+
+* ...
