@@ -19,8 +19,8 @@ gem 'sentry-rails'
 gem 'sentry-ruby'
 gem 'sprockets-rails'
 gem 'stimulus-rails'
-gem 't-command', git: 'https://github.com/timlawrenz/t-command.git'
 gem 'tailwindcss-rails'
+gem 't-command', git: 'https://github.com/timlawrenz/t-command.git'
 gem 'turbo-rails'
 
 group :development, :test do
