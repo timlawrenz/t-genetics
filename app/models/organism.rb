@@ -1,4 +1,4 @@
 # frozen_string_literal: true
 
-class Project < ApplicationRecord
+class Organism < ApplicationRecord
 end
