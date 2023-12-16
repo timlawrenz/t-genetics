@@ -4,10 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'alleles/show' do
   before do
-    assign(:allele, Allele.create!(
-                      name: 'Name',
-                      chromosome: nil
-                    ))
+    assign(:allele, FactoryBot.create(:allele))
   end
 
   it 'renders attributes in <p>' do
