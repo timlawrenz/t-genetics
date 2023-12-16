@@ -10,6 +10,5 @@ end
 
 FactoryBot.define do
   factory :float_allele do
-    value { 0.3 }
   end
 end
