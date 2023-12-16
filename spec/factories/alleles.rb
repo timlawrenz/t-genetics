@@ -4,6 +4,7 @@ FactoryBot.define do
   factory :allele do
     name { 'MyString' }
     chromosome
+    inheritable { FactoryBot.create(:float_allele) }
   end
 end
 
