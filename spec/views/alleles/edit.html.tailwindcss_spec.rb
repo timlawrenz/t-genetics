@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'alleles/edit' do
   let(:allele) do
-    FactoryBot::create(:allele)
+    FactoryBot.create(:allele, inheritable: FactoryBot.create(:float_allele))
   end
 
   before do
