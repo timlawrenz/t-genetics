@@ -1,0 +1,9 @@
+.md:flex.md:items-center.md:justify-between
+  .min-w-0.flex-1
+    %h2.text-2xl.font-bold.leading-7.text-white.sm:truncate.sm:text-3xl.sm:tracking-tight
+      = klass
+
+  .mt-4.flex.md:ml-4.md:mt-0
+    = link_to "New #{klass}",
+      send("new_#{klass.downcase}_path"),
+      class: "rounded-lg inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
