@@ -19,11 +19,19 @@ RSpec.describe '/alleles' do
   # Allele. As you add validations to Allele, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) do
-    skip('Add a hash of attributes valid for your model')
+    { name: 'foobaz',
+      inheritable_id: Alleles::Float.first.id,
+      inheritable_type: 'Alleles::Float',
+      chromosome_id: Chromosome.first.id }
   end
 
   let(:invalid_attributes) do
-    skip('Add a hash of attributes invalid for your model')
+    { name: nil, inheritable: nil, chromosome: nil }
+  end
+
+  before do
+    FactoryBot.create(:chromosome)
+    FactoryBot.create(:'Alleles::Float')
   end
 
   describe 'GET /index' do

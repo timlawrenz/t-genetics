@@ -4,11 +4,12 @@ FactoryBot.define do
   factory :allele do
     name { 'MyString' }
     chromosome
-    inheritable { FactoryBot.create(:float_allele) }
+    inheritable { Alleles::Float.create }
   end
 end
 
 FactoryBot.define do
-  factory :float_allele do
+  factory :'Alleles::Float' do
+    allele
   end
 end

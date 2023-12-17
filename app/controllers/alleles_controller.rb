@@ -54,6 +54,6 @@ class AllelesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def allele_params
-    params.require(:allele).permit(:name, :chromosome_id)
+    params.require(:allele).permit(:name, :chromosome_id, :inheritable_id, :inheritable_type)
   end
 end
