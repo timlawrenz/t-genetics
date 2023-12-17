@@ -96,14 +96,17 @@ RSpec.describe '/alleles' do
   describe 'PATCH /update' do
     context 'with valid parameters' do
       let(:new_attributes) do
-        skip('Add a hash of attributes valid for your model')
+        { name: 'baz',
+          inheritable_id: Alleles::Float.first.id,
+          inheritable_type: 'Alleles::Float',
+          chromosome_id: Chromosome.first.id }
       end
 
       it 'updates the requested allele' do
         allele = Allele.create! valid_attributes
         patch allele_url(allele), params: { allele: new_attributes }
         allele.reload
-        skip('Add assertions for updated state')
+        expect(allele.name).to eq('baz')
       end
 
       it 'redirects to the allele' do

@@ -19,11 +19,11 @@ RSpec.describe '/chromosomes' do
   # Chromosome. As you add validations to Chromosome, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) do
-    skip('Add a hash of attributes valid for your model')
+    { name: 'foobaz' }
   end
 
   let(:invalid_attributes) do
-    skip('Add a hash of attributes invalid for your model')
+    { name: nil }
   end
 
   describe 'GET /index' do
@@ -88,14 +88,14 @@ RSpec.describe '/chromosomes' do
   describe 'PATCH /update' do
     context 'with valid parameters' do
       let(:new_attributes) do
-        skip('Add a hash of attributes valid for your model')
+        { name: 'baz' }
       end
 
       it 'updates the requested chromosome' do
         chromosome = Chromosome.create! valid_attributes
         patch chromosome_url(chromosome), params: { chromosome: new_attributes }
         chromosome.reload
-        skip('Add assertions for updated state')
+        expect(chromosome.name).to eq('baz')
       end
 
       it 'redirects to the chromosome' do
