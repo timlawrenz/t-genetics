@@ -2,4 +2,5 @@
   = render partial: 'notice'
   = render partial: 'table_header', locals: { klass: 'Chromosome' }
   #chromosomes.min-w-full
-    = render @chromosomes
+    %ul.divide-y.divide-gray-400{ role: :list }
+      = render @chromosomes

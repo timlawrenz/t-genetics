@@ -1,0 +1,6 @@
+%li.flex.justify-between.gap-x-6.py-5{ id: dom_id(chromosome) }
+  .flex.min-w-0.gap-x-4
+    .min-w-0.flex-auto
+      %p.text-sm.font-semibold.leading-6.text-white= chromosome.name
+  .hidden.shrink-0.sm:flex.sm:flex-col.sm:items-end
+    %p.text-sm.leading-6.text-white= pluralize(chromosome.alleles.count, 'allele')
