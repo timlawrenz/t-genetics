@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_18_191730) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_18_213531) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -59,6 +59,12 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_18_191730) do
   create_table "integer_alleles", force: :cascade do |t|
     t.integer "minimum", default: 0, null: false
     t.integer "maximum", default: 100, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "integer_values", force: :cascade do |t|
+    t.integer "data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
