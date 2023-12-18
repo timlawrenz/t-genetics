@@ -6,3 +6,4 @@
         %p.text-sm.leading-6.text-white= allele.to_s
   .hidden.shrink-0.sm:flex.sm:flex-col.sm:items-end
     %p.text-sm.leading-6.text-white= pluralize(chromosome.alleles.count, 'allele')
+    %p.text-sm.leading-6.text-white= pluralize(chromosome.generations.count, 'generation')
