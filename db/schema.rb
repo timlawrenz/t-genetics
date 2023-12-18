@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_18_182305) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_18_191730) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -42,6 +42,12 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_18_182305) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "float_values", force: :cascade do |t|
+    t.float "data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "generations", force: :cascade do |t|
     t.bigint "chromosome_id", null: false
     t.integer "iteration", default: -1, null: false
@@ -65,7 +71,20 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_18_182305) do
     t.index ["generation_id"], name: "index_organisms_on_generation_id"
   end
 
+  create_table "values", force: :cascade do |t|
+    t.bigint "organism_id", null: false
+    t.bigint "allele_id", null: false
+    t.string "valuable_type"
+    t.integer "valuable_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["allele_id"], name: "index_values_on_allele_id"
+    t.index ["organism_id"], name: "index_values_on_organism_id"
+  end
+
   add_foreign_key "alleles", "chromosomes"
   add_foreign_key "generations", "chromosomes"
   add_foreign_key "organisms", "generations"
+  add_foreign_key "values", "alleles"
+  add_foreign_key "values", "organisms"
 end
