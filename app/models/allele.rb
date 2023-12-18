@@ -6,4 +6,8 @@ class Allele < ApplicationRecord
 
   belongs_to :chromosome
   delegated_type :inheritable, types: ['Alleles::Float', 'Alleles::Boolean']
+
+  def to_s
+    "#{name}, #{inheritable.to_s}"
+  end
 end

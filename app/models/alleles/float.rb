@@ -5,5 +5,9 @@ module Alleles
     self.table_name = :float_alleles
 
     include Inheritable
+
+    def to_s
+      "minimum: #{minimum}, maximum: #{maximum}"
+    end
   end
 end
