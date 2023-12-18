@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_18_174105) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_18_182305) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -57,6 +57,15 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_18_174105) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "organisms", force: :cascade do |t|
+    t.bigint "generation_id", null: false
+    t.integer "fitness"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["generation_id"], name: "index_organisms_on_generation_id"
+  end
+
   add_foreign_key "alleles", "chromosomes"
   add_foreign_key "generations", "chromosomes"
+  add_foreign_key "organisms", "generations"
 end

@@ -5,3 +5,4 @@ chromosome = Chromosome.create(name: 'Tip Recommendations')
 end
 
 generation = chromosome.generations.create(iteration: 1)
+Organism.create(generation:)

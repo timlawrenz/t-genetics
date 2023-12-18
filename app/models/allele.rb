@@ -5,7 +5,7 @@ class Allele < ApplicationRecord
   validates :inheritable, presence: true
 
   belongs_to :chromosome
-  delegated_type :inheritable, types: ['Alleles::Float']
+  delegated_type :inheritable, types: ['Alleles::Float', 'Alleles::Boolean']
 
   def to_s
     "#{name}, #{inheritable}"
