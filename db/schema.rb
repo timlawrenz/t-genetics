@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_18_213531) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_21_222357) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -77,6 +77,15 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_18_213531) do
     t.index ["generation_id"], name: "index_organisms_on_generation_id"
   end
 
+  create_table "relationships", force: :cascade do |t|
+    t.bigint "parent_id", null: false
+    t.bigint "child_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["child_id"], name: "index_relationships_on_child_id"
+    t.index ["parent_id"], name: "index_relationships_on_parent_id"
+  end
+
   create_table "values", force: :cascade do |t|
     t.bigint "organism_id", null: false
     t.bigint "allele_id", null: false
@@ -91,6 +100,8 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_18_213531) do
   add_foreign_key "alleles", "chromosomes"
   add_foreign_key "generations", "chromosomes"
   add_foreign_key "organisms", "generations"
+  add_foreign_key "relationships", "chromosomes", column: "child_id"
+  add_foreign_key "relationships", "chromosomes", column: "parent_id"
   add_foreign_key "values", "alleles"
   add_foreign_key "values", "organisms"
 end

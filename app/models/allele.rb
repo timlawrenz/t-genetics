@@ -7,6 +7,14 @@ class Allele < ApplicationRecord
 
   belongs_to :chromosome
 
+  def self.new_with_float(name:, minimum:, maximum:)
+    new(name:, inheritable: Alleles::Float.create(minimum:, maximum:))
+  end
+
+  def self.new_with_integer(name:, minimum:, maximum:)
+    new(name:, inheritable: Alleles::Integer.create(minimum:, maximum:))
+  end
+
   def to_s
     "#{name}: [#{inheritable}]"
   end
