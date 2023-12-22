@@ -15,6 +15,10 @@ class Allele < ApplicationRecord
     new(name:, inheritable: Alleles::Integer.create(minimum:, maximum:))
   end
 
+  def type
+    inheritable.class.to_s.split('::').last
+  end
+
   def to_s
     "#{name}: [#{inheritable}]"
   end
