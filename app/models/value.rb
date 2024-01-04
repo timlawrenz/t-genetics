@@ -10,6 +10,9 @@ class Value < ApplicationRecord
   delegate :random, to: :valuable
   delegate :mutate!, to: :valuable
 
+  scope :with_allele, -> { joins(:allele) }
+  scope :by_name, ->(name) { with_allele.where(allele: { name: name }) }
+
   def self.new_from(allele)
     valuable_type = "Values::#{allele.type}".constantize
     new(allele:, valuable: valuable_type.new)

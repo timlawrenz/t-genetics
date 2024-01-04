@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Values
-  class Integer < ApplicationRecord
-    self.table_name = :integer_values
+  class Float < ApplicationRecord
+    self.table_name = :float_values
     delegate :allele, to: :value
     include Valuable
 

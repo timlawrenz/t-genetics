@@ -17,12 +17,12 @@ RSpec.describe 'Basic Actions' do # rubocop:disable RSpec/DescribeClass
 
         before do
           chromosome.alleles << Allele.new_with_integer(name: 'legs', minimum: 1, maximum: 50)
-          chromosome.alleles << Allele.new_with_float(name: 'hight', minimum: 1, maximum: 10)
+          chromosome.alleles << Allele.new_with_float(name: 'height', minimum: 1, maximum: 10)
         end
 
         it 'shows the allele in to_s' do
           expect(chromosome.to_s).to include('legs: [minimum: 1, maximum: 50]')
-          expect(chromosome.to_s).to include('hight: [minimum: 1.0, maximum: 10.0]')
+          expect(chromosome.to_s).to include('height: [minimum: 1.0, maximum: 10.0]')
         end
 
         context 'when creating a generation' do
@@ -35,19 +35,15 @@ RSpec.describe 'Basic Actions' do # rubocop:disable RSpec/DescribeClass
           end
 
           context 'when creating an organism' do # rubocop:disable RSpec/NestedGroups
+            let(:organism) { Organism.factory(generation: Generation.last) }
+
             before do
-              organism = Organism.create(id: 1, generation: Generation.last)
-              puts chromosome.alleles.inspect
-              legs = Value.new_from(chromosome.alleles.find_by(name: 'legs'))
-              legs.data = 7
-              organism.values << legs
-              height = Value.new_from(chromosome.alleles.find_by(name: 'height'))
-              height.data = 3.5
-              organism.values << height
+              organism.values.by_name(:legs).first.valuable.update(data: 7)
+              organism.values.by_name(:height).first.valuable.update(data: 3.5)
             end
 
             it 'shows the data' do
-              expect(Organism.last.to_s).not_to be_blank
+              expect(organism.reload.to_hsh).to eq({ legs: 7, height: 3.5 })
             end
           end
         end
