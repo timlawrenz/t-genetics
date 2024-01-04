@@ -1,5 +1,5 @@
 module Organisms
-  class SetValueByName < ApplicationCommand
+  class SetValue < ApplicationCommand
     requires :organism
     requires :name
     requires :value

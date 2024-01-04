@@ -38,12 +38,24 @@ RSpec.describe 'Basic Actions' do # rubocop:disable RSpec/DescribeClass
             let(:organism) { Organism.factory(generation: Generation.last) }
 
             before do
-              Organisms::SetValueByName.call(organism:, name: :legs, value: 7)
-              Organisms::SetValueByName.call(organism:, name: :height, value: 3.5)
+              organism.set_value(:legs, 7)
+              organism.set_value(:height, 3.5)
             end
 
             it 'shows the data' do
               expect(organism.reload.to_hsh).to eq({ legs: 7, height: 3.5 })
+            end
+
+            context 'when setting a fitness' do # rubocop:disable RSpec/NestedGroups
+              it 'remembers its fitness' do
+                organism.update(fitness: 100)
+                expect(organism.fitness).to eq(100)
+              end
+
+              it 'changes the fitness of the generation' do
+                expect { organism.update(fitness: 100) }
+                  .to change(organism.generation, :average_fitness)
+              end
             end
           end
         end
