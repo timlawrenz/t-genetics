@@ -8,7 +8,7 @@ generation = chromosome.generations.create(iteration: 1)
 
 def add_value(index, value)
   name = @allele_names[index]
-  valuable = IntegerValue.new(data: value)
+  valuable = Values::Integer.new(data: value)
   Value.create(organism: @organism, allele: Allele.find_by(name:), valuable:)
 end
 

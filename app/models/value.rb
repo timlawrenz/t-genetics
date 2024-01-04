@@ -6,6 +6,7 @@ class Value < ApplicationRecord
 
   delegated_type :valuable, types: ['Value::Float', 'Value::Boolean', 'Value::Integer']
   delegate :data, to: :valuable
+  delegate :data=, to: :valuable
   delegate :random, to: :valuable
   delegate :mutate!, to: :valuable
 
