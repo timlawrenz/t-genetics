@@ -38,8 +38,8 @@ RSpec.describe 'Basic Actions' do # rubocop:disable RSpec/DescribeClass
             let(:organism) { Organism.factory(generation: Generation.last) }
 
             before do
-              organism.values.by_name(:legs).first.valuable.update(data: 7)
-              organism.values.by_name(:height).first.valuable.update(data: 3.5)
+              Organisms::SetValueByName.call(organism:, name: :legs, value: 7)
+              Organisms::SetValueByName.call(organism:, name: :height, value: 3.5)
             end
 
             it 'shows the data' do
