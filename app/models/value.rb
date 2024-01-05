@@ -5,11 +5,8 @@ class Value < ApplicationRecord
   belongs_to :allele
 
   delegated_type :valuable, types: ['Value::Float', 'Value::Boolean', 'Value::Integer']
-  delegate :data, to: :valuable
-  delegate :data=, to: :valuable
-  delegate :random, to: :valuable
-  delegate :mutate, to: :valuable
-  delegate :mutate!, to: :valuable
+  delegate :data, :data=, to: :valuable
+  delegate :mutate, :mutate!, to: :valuable
 
   scope :with_allele, -> { joins(:allele) }
   scope :by_name, ->(name) { with_allele.where(allele: { name: }) }
