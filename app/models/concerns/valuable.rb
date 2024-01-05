@@ -7,17 +7,18 @@ module Valuable
     has_one :value, as: :valuable, touch: true, dependent: :destroy
     delegate :allele, to: :value
 
-    def to_s
-      data
-    end
-
     def random
       inheritable = allele.inheritable
       rand(inheritable.minimum..inheritable.maximum)
     end
 
-    def mutate!
+    def mutate
       self.data = random
+    end
+
+    def mutate!
+      mutate
+      save
     end
   end
 end

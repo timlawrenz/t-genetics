@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :organism do
-    generation { nil }
+    generation
     fitness { 1 }
   end
 end
