@@ -55,6 +55,8 @@ RSpec.describe 'Basic Actions' do # rubocop:disable RSpec/DescribeClass
               it 'changes the fitness of the generation' do
                 expect { organism.update(fitness: 100) }
                   .to change(organism.generation, :average_fitness)
+                  .from(nil)
+                  .to(100)
               end
             end
           end
