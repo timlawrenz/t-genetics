@@ -5,11 +5,7 @@ require 'rails_helper'
 RSpec.describe Value do
   let(:allele) { FactoryBot.create(:allele) }
   let(:organism) { FactoryBot.create(:organism) }
-  let(:value) do
-    v = described_class.new_from(allele)
-    organism.values << v
-    v
-  end
+  let(:value) { described_class.create_from(allele, organism:) }
 
   describe 'mutations' do
     it 'changes the content of data' do

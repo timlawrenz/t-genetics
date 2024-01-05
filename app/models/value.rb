@@ -8,14 +8,21 @@ class Value < ApplicationRecord
   delegate :data, to: :valuable
   delegate :data=, to: :valuable
   delegate :random, to: :valuable
+  delegate :mutate, to: :valuable
   delegate :mutate!, to: :valuable
 
   scope :with_allele, -> { joins(:allele) }
   scope :by_name, ->(name) { with_allele.where(allele: { name: }) }
 
-  def self.new_from(allele)
+  def self.new_from(allele, options = {})
     valuable_type = "Values::#{allele.type}".constantize
-    new(allele:, valuable: valuable_type.new)
+    new(options.merge(allele:, valuable: valuable_type.new))
+  end
+
+  def self.create_from(allele, options = {})
+    v = new_from(allele, options)
+    v.save
+    v
   end
 
   def to_s
