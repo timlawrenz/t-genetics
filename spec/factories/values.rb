@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :value do
-    organism { nil }
-    allele { nil }
+    organism
+    allele
   end
 end
