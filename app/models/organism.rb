@@ -5,6 +5,7 @@ class Organism < ApplicationRecord
   has_many :values, dependent: :destroy
 
   scope :with_fitness, -> { where.not(fitness: nil) }
+
   def self.factory(generation:)
     result = create(generation:)
     generation.chromosome.alleles.each do |allele|

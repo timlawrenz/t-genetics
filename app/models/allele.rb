@@ -15,6 +15,10 @@ class Allele < ApplicationRecord
     new(name:, inheritable: Alleles::Integer.create(minimum:, maximum:))
   end
 
+  def self.new_with_boolean(name:)
+    new(name:, inheritable: Alleles::Boolean.create)
+  end
+
   def type
     inheritable.class.to_s.split('::').last
   end

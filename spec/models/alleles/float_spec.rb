@@ -3,5 +3,5 @@
 require 'rails_helper'
 
 RSpec.describe Alleles::Float do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it { is_expected.to have_one(:allele) }
 end

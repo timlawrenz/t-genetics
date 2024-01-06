@@ -7,7 +7,7 @@ module Alleles
     include Inheritable
 
     def to_s
-      ''
+      'boolean'
     end
   end
 end

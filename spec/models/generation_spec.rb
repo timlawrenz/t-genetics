@@ -3,5 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe Generation do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it { is_expected.to belong_to(:chromosome) }
+  it { is_expected.to have_many(:organisms) }
 end
