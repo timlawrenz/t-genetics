@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Organisms
   class SetValue < ApplicationCommand
     requires :organism
