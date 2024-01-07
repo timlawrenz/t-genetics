@@ -7,9 +7,11 @@ class Value < ApplicationRecord
   delegated_type :valuable, types: ['Value::Float', 'Value::Boolean', 'Value::Integer']
   delegate :data, :data=, to: :valuable
   delegate :mutate, :mutate!, to: :valuable
+  delegate :name, to: :allele
 
   scope :with_allele, -> { joins(:allele) }
   scope :by_name, ->(name) { with_allele.where(allele: { name: }) }
+
 
   def self.new_from(allele, options = {})
     valuable_type = "Values::#{allele.type}".constantize

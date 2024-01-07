@@ -2,6 +2,7 @@
 
 class Organism < ApplicationRecord
   belongs_to :generation
+  has_one :chromosome, through: :generation
   has_many :values, dependent: :destroy
 
   scope :with_fitness, -> { where.not(fitness: nil) }
