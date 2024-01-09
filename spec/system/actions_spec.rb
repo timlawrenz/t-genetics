@@ -28,16 +28,14 @@ RSpec.describe 'Basic Actions' do # rubocop:disable RSpec/DescribeClass
         end
 
         context 'when creating a generation' do
-          before do
-            chromosome.generations.create(iteration: 1)
-          end
+          let(:generation) { chromosome.generations.create(iteration: 1) }
 
           it 'attaches the generation to the chromosome' do
-            expect(Generation.last.chromosome).to eq(chromosome)
+            expect(generation.chromosome).to eq(chromosome)
           end
 
           context 'when creating an organism' do # rubocop:disable RSpec/NestedGroups
-            let(:organism) { Organism.factory(generation: Generation.last) }
+            let(:organism) { Organisms::Create.call(generation:).organism }
 
             before do
               organism.set_value(:legs, 7)
