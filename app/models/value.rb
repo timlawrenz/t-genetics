@@ -12,7 +12,6 @@ class Value < ApplicationRecord
   scope :with_allele, -> { joins(:allele) }
   scope :by_name, ->(name) { with_allele.where(allele: { name: }) }
 
-
   def self.new_from(allele, options = {})
     valuable_type = "Values::#{allele.type}".constantize
     new(options.merge(allele:, valuable: valuable_type.new))
