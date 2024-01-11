@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 MUTATION_RATE = 0.005
+CROSS_OVER_RATE = 0.07
 
 class Organism < ApplicationRecord
   belongs_to :generation
