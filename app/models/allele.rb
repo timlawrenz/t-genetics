@@ -4,6 +4,7 @@ class Allele < ApplicationRecord
   validates :name, presence: true
 
   delegated_type :inheritable, types: ['Alleles::Float', 'Alleles::Boolean', 'Alleles::Integer']
+  delegate :minimum, :maximum, to: :inheritable
 
   belongs_to :chromosome
 
