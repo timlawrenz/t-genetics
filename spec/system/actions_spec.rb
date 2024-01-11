@@ -64,6 +64,7 @@ RSpec.describe 'Basic Actions' do # rubocop:disable RSpec/DescribeClass
                 let(:organism2) { Organisms::Create.call(generation:).organism }
 
                 before do
+                  organism.update(fitness: 100)
                   organism2.mutate!
                 end
 
@@ -71,6 +72,15 @@ RSpec.describe 'Basic Actions' do # rubocop:disable RSpec/DescribeClass
                   expect(organism2.values.by_name(:legs).first).not_to be_nil
                   expect(organism2.values.by_name(:height).first).not_to be_nil
                   expect(organism2.values.by_name(:flies).first).not_to be_nil
+                end
+
+                context 'when setting a fitness' do # rubocop:disable RSpec/NestedGroups
+                  it 'changes the fitness of the generation' do
+                    expect { organism2.update(fitness: 10) }
+                      .to change { Generations::Fitness.call(generation:).average_fitness }
+                      .from(100)
+                      .to(55)
+                  end
                 end
               end
             end
