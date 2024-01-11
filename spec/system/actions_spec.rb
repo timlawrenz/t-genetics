@@ -65,13 +65,13 @@ RSpec.describe 'Basic Actions' do # rubocop:disable RSpec/DescribeClass
 
                 before do
                   organism.update(fitness: 100)
-                  organism2.mutate!
+                  organism2.mutate!(probability: 1)
                 end
 
                 it 'has values for all alleles' do
-                  expect(organism2.values.by_name(:legs).first).not_to be_nil
-                  expect(organism2.values.by_name(:height).first).not_to be_nil
-                  expect(organism2.values.by_name(:flies).first).not_to be_nil
+                  expect(organism2.values.by_name(:legs).first.data).not_to be_nil
+                  expect(organism2.values.by_name(:height).first.data).not_to be_nil
+                  expect(organism2.values.by_name(:flies).first.data).not_to be_nil
                 end
 
                 context 'when setting a fitness' do # rubocop:disable RSpec/NestedGroups
