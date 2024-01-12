@@ -3,24 +3,18 @@
 module Generations
   class Pick < ApplicationCommand
     requires :generation
+    delegate :organism, to: :context
 
     def call
+      total_fitness = Generations::Fitness.call(generation:).total_fitness
       rand_selection = rand(total_fitness)
 
       total = 0
-      generation.chromosomes.each do |chr|
-        context.chromosome = chr
-        total += chr.fitness
+      generation.organisms.with_fitness.each do |orga|
+        context.organism = orga
+        total += orga.fitness
         break if total > rand_selection
       end
-
-      context.fail! if context.chromosome.blank?
     end
-  end
-
-  private
-
-  def total_fitness
-    @total_fitness ||= Generations::Fitness.call(generation:).total_fitness
   end
 end
