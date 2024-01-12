@@ -20,6 +20,10 @@ class Allele < ApplicationRecord
     new(name:, inheritable: Alleles::Boolean.create)
   end
 
+  def crossover_algorithm
+    Organismsm::Crossovers::Average
+  end
+
   def type
     inheritable.class.to_s.split('::').last
   end

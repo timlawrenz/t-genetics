@@ -10,8 +10,11 @@ module Generations
 
     def call
       organisms = parent_generation.organisms
-      while organisms.count < organism_count do
+      while organisms.count < organism_count
         parents = []
+        2.times { parents << Generations::Pick.call(generation: parent_generation) }
+        children = Generations::Proreate.call(parents:).children
+        children.each { |child| child.update(generation: offspring_generation) }
       end
     end
 

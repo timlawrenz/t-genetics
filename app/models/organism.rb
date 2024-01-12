@@ -18,6 +18,10 @@ class Organism < ApplicationRecord
     Organisms::SetValue.call(organism: self, name:, value:)
   end
 
+  def clone
+    Organisms::Clone.call(organism: self).clone
+  end
+
   def to_hsh
     values.includes(:allele).sort_by(&:name).each_with_object({}) do |value, result|
       result[value.allele.name.to_sym] = value.data
