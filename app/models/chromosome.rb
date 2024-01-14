@@ -6,21 +6,14 @@ class Chromosome < ApplicationRecord
   has_many :generations, dependent: :destroy
   has_many :organisms, through: :generations
 
+
+  after_initialize do
+    alleles.each do |allele|
+      self.class.send(:define_method, allele.name) { allele }
+    end
+  end
+
   def to_s
-    "#<Chromosome id:#{id} name:#{name} alleles:[#{alleles.map(&:to_s).join(', ')}]>"
-  end
-
-  def allele_named?(name)
-    alleles.by_name(name).present?
-  end
-
-  def respond_to_missing?(method_name, *_arguments, &)
-    allele_named?(method_name)
-  end
-
-  def method_missing(method_name, *_arguments, &)
-    return alleles.by_name(method_name) if allele_named?(method_name)
-
-    super
+    "#<Chromosome id:#{id} name:#{name} alleles:[#{alleles.map(&:to_s).sort.join(', ')}]>"
   end
 end
