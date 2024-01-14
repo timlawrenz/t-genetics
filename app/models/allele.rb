@@ -5,6 +5,7 @@ class Allele < ApplicationRecord
 
   delegated_type :inheritable, types: ['Alleles::Float', 'Alleles::Boolean', 'Alleles::Integer']
   delegate :minimum, :maximum, to: :inheritable
+  scope :by_name, ->(name) { find_by(name:) }
 
   belongs_to :chromosome
 
