@@ -9,11 +9,8 @@ module Generations
     before :set_defaults
 
     def call
-      organisms = parent_generation.organisms
-      while organisms.count < organism_count
-        parents = []
-        2.times { parents << Generations::Pick.call(generation: parent_generation) }
-        children = Generations::Proreate.call(parents:).children
+      while offspring_generation.organisms.count < organism_count
+        children = Organisms::Procreate.call(parents:).children
         children.each { |child| child.update(generation: offspring_generation) }
       end
     end
@@ -22,6 +19,16 @@ module Generations
 
     def set_defaults
       context.organism_count ||= 20
+    end
+
+    def parents
+      result = []
+      2.times do
+        pick_result = Generations::Pick.call(generation: parent_generation)
+        result << pick_result.organism if pick_result.success?
+      end
+
+      result
     end
   end
 end

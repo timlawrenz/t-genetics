@@ -3,7 +3,6 @@
 module Generations
   class Pick < ApplicationCommand
     requires :generation
-    delegate :organism, to: :context
 
     def call
       total_fitness = Generations::Fitness.call(generation:).total_fitness

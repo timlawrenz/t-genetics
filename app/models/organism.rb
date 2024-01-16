@@ -18,7 +18,7 @@ class Organism < ApplicationRecord
     Organisms::SetValue.call(organism: self, name:, value:)
   end
 
-  def clone
+  def dolly_clone
     Organisms::Clone.call(organism: self).clone
   end
 
