@@ -6,7 +6,6 @@ class Chromosome < ApplicationRecord
   has_many :generations, dependent: :destroy
   has_many :organisms, through: :generations
 
-
   after_initialize do
     alleles.each do |allele|
       self.class.send(:define_method, allele.name) { allele }
