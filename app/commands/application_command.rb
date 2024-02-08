@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
 class ApplicationCommand
-  include T::Command
-  include T::Contract
+  include GL::Command
+  include GL::Contract
 end

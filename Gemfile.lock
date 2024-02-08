@@ -1,8 +1,8 @@
 GIT
-  remote: https://github.com/timlawrenz/t-command.git
-  revision: 1b0cf1289b36e155176a4096a7fcc4d38d4a1268
+  remote: https://github.com/givelively/gl-command.git
+  revision: 65b67beb95ebaa6dd7fbd5a2e487f286145ddc7d
   specs:
-    t-command (0.0.1)
+    gl-command (1.0.0)
       activerecord (>= 3.2.0)
       activesupport (>= 3.2.0)
       railties (>= 3.2.0)
@@ -427,6 +427,7 @@ DEPENDENCIES
   debug
   dotenv-rails
   factory_bot_rails
+  gl-command!
   haml-rails
   importmap-rails
   launchy
@@ -453,7 +454,6 @@ DEPENDENCIES
   spring-commands-rubocop
   sprockets-rails
   stimulus-rails
-  t-command!
   tailwindcss-rails
   timecop
   turbo-rails
