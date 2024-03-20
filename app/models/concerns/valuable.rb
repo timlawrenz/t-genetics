@@ -13,6 +13,7 @@ module Valuable
     end
 
     def mutate
+      Rails.logger.info("mutation! #{to_s}")
       self.data = random
     end
 

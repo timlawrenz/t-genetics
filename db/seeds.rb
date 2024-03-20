@@ -2,7 +2,7 @@ chromosome = Chromosome.create(name: 'Tip Recommendations')
 
 @allele_names = [:button1, :button2, :button3]
 @allele_names.each do |name|
-  chromosome.alleles.create(name:, inheritable: Alleles::Float.create(minimum: 1, maximum: 50))
+  chromosome.alleles.create(name:, inheritable: Alleles::Integer.create(minimum: 1, maximum: 50))
 end
 generation = chromosome.generations.create(iteration: 1)
 
