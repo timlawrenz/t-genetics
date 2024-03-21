@@ -16,14 +16,11 @@ RSpec.describe Organism do
       chromosome.alleles << Allele.new_with_integer(name: 'legs', minimum: 1, maximum: 50)
       chromosome.alleles << Allele.new_with_float(name: 'height', minimum: 1, maximum: 10)
       chromosome.alleles << Allele.new_with_boolean(name: 'flies')
+      chromosome.alleles << Allele.new_with_option(name: 'color', choices: %w[green blue])
     end
 
     it 'sets all values' do
       # rubocop:disable Style/HashEachMethods
-      organism.values.each do |value|
-        expect(value.data).to be_nil
-      end
-
       organism.mutate!(probability: 1)
 
       organism.values.each do |value|

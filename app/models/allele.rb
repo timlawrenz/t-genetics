@@ -3,8 +3,12 @@
 class Allele < ApplicationRecord
   validates :name, presence: true
 
-  delegated_type :inheritable, types: ['Alleles::Float', 'Alleles::Boolean', 'Alleles::Integer']
-  delegate :minimum, :maximum, to: :inheritable
+  delegated_type :inheritable,
+                 types: ['Alleles::Float',
+                         'Alleles::Boolean',
+                         'Alleles::Integer',
+                         'Alleles::Option']
+
   scope :by_name, ->(name) { find_by(name:) }
 
   belongs_to :chromosome
@@ -19,6 +23,10 @@ class Allele < ApplicationRecord
 
   def self.new_with_boolean(name:)
     new(name:, inheritable: Alleles::Boolean.create)
+  end
+
+  def self.new_with_option(name:, choices:)
+    new(name:, inheritable: Alleles::Option.create(choices:))
   end
 
   def crossover_algorithm

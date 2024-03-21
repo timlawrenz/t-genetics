@@ -6,14 +6,11 @@ module Valuable
   included do
     has_one :value, as: :valuable, touch: true, dependent: :destroy
     delegate :allele, to: :value
-
-    def random
-      inheritable = allele.inheritable
-      rand(inheritable.minimum..inheritable.maximum)
-    end
+    delegate :inheritable, to: :allele
+    delegate :random, to: :inheritable
 
     def mutate
-      Rails.logger.info("mutation! #{to_s}")
+      Rails.logger.info("mutation! #{value}")
       self.data = random
     end
 

@@ -19,12 +19,14 @@ RSpec.describe 'Basic Actions' do # rubocop:disable RSpec/DescribeClass
           chromosome.alleles << Allele.new_with_integer(name: 'legs', minimum: 1, maximum: 50)
           chromosome.alleles << Allele.new_with_float(name: 'height', minimum: 1, maximum: 10)
           chromosome.alleles << Allele.new_with_boolean(name: 'flies')
+          chromosome.alleles << Allele.new_with_option(name: 'color', choices: %i[green blue])
         end
 
         it 'shows the allele in to_s' do
           expect(chromosome.to_s).to include('legs: [minimum: 1, maximum: 50]')
           expect(chromosome.to_s).to include('height: [minimum: 1.0, maximum: 10.0]')
           expect(chromosome.to_s).to include('flies: [boolean]')
+          expect(chromosome.to_s).to include('color: [choices: ["green", "blue"]]')
         end
 
         context 'when creating a generation' do
@@ -41,10 +43,12 @@ RSpec.describe 'Basic Actions' do # rubocop:disable RSpec/DescribeClass
               organism.set_value(:legs, 7)
               organism.set_value(:height, 3.5)
               organism.set_value(:flies, true)
+              organism.set_value(:color, :blue)
             end
 
             it 'shows the data' do
-              expect(organism.reload.to_hsh).to eq({ legs: 7, height: 3.5, flies: true })
+              expect(organism.reload.to_hsh)
+                .to eq({ color: 'blue', legs: 7, height: 3.5, flies: true })
             end
 
             context 'when setting a fitness' do # rubocop:disable RSpec/NestedGroups
@@ -72,6 +76,7 @@ RSpec.describe 'Basic Actions' do # rubocop:disable RSpec/DescribeClass
                   expect(organism2.values.by_name(:legs).first.data).not_to be_nil
                   expect(organism2.values.by_name(:height).first.data).not_to be_nil
                   expect(organism2.values.by_name(:flies).first.data).not_to be_nil
+                  expect(organism2.values.by_name(:color).first.data).not_to be_nil
                 end
 
                 context 'when setting a fitness' do # rubocop:disable RSpec/NestedGroups

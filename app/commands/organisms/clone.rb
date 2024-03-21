@@ -7,7 +7,7 @@ module Organisms
     def call
       create_result = Organisms::Create.call(generation: organism.generation)
       context.clone = create_result.organism
-      context.organism.values.each do |value|
+      context.organism.each_value do |value|
         context.clone.set_value(value.name, value.data)
       end
     end
