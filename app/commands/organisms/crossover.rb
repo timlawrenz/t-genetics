@@ -1,13 +1,20 @@
 # frozen_string_literal: true
 
 module Organisms
-  class Crossover < ApplicationCommand
+  class Crossover < GLCommand::Callable
     requires :organisms
 
     def call
-      organisms.first.allele.each do |allele|
-        values = organisms.map(&:values).flatten.select { |value| value.name == allele.name }
-        allele.crossover_algorithm.call(values:)
+      organisms.first.chromosome.alleles.each do |allele|
+        next unless rand < CROSS_OVER_RATE
+
+        puts "Crossover of #{allele.name}"
+        values = allele.values.where(organism: organisms)
+
+        o1 = values.first.organism
+        o2 = values.last.organism
+        values.first.update(organism: o2)
+        values.last.update(organism: o1)
       end
     end
   end

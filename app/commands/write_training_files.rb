@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class WriteTrainingFiles < ApplicationCommand
+class WriteTrainingFiles < GLCommand::Callable
   BASE_FOLDER = '/home/tim/source/essdee/EveryDream2trainer/'
 
   requires :organism

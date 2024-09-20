@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module Organisms
-  class Create < ApplicationCommand
-    requires :generation
+  class Create < GLCommand::Callable
+    requires generation: Generation
+    returns organism: Organism
 
     def call
       context.organism = generation.organisms.create

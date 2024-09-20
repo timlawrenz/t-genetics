@@ -6,6 +6,10 @@ module Alleles
 
     include Inheritable
 
+    def crossover_algorithm
+      Organisms::Crossovers::Random
+    end
+
     def to_s
       'boolean'
     end

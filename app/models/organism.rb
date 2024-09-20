@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-MUTATION_RATE = 0.005
-CROSS_OVER_RATE = 0.07
-
 class Organism < ApplicationRecord
   belongs_to :generation
   has_one :chromosome, through: :generation
@@ -23,7 +20,7 @@ class Organism < ApplicationRecord
   end
 
   def to_hsh
-    values.includes(:allele).sort_by(&:name).each_with_object({}) do |value, result|
+    values.reload.includes(:allele).sort_by(&:name).each_with_object({}) do |value, result|
       result[value.allele.name.to_sym] = value.data
     end
   end

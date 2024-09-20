@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Generations
-  class Pick < ApplicationCommand
-    requires :generation
+  class Pick < GLCommand::Callable
+    requires generation: Generation
 
     def call
       total_fitness = Generations::Fitness.call(generation:).total_fitness

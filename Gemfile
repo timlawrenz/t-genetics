@@ -20,7 +20,7 @@ gem 'sentry-ruby'
 gem 'sprockets-rails'
 gem 'stimulus-rails'
 gem 'tailwindcss-rails'
-gem 'gl-command', git: 'https://github.com/givelively/gl-command.git'
+gem 'gl_command', git: 'https://github.com/givelively/gl_command.git'
 gem 'turbo-rails'
 
 group :development, :test do

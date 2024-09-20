@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 module Generations
-  class Fitness < ApplicationCommand
-    requires :generation
+  class Fitness < GLCommand::Callable
+    requires generation: Generation
+    returns average_fitness: Float,
+            total_fitness: Float
 
     def call
       context.total_fitness = organisms_with_fitness.sum(&:fitness)

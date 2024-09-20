@@ -6,10 +6,10 @@
 
     <%= render @chromosome %>
 
-    <%= link_to "Edit this chromosome", edit_chromosome_path(@chromosome), class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+    <%= link_to "Edit this chromosome", edit_chromosome_path(@chromosome), class: "mt-2 rounded-lg py-3 px-5 bg-teal-200 inline-block font-medium text-teal-700" %>
     <div class="inline-block ml-2">
-      <%= button_to "Destroy this chromosome", chromosome_path(@chromosome), method: :delete, class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 font-medium" %>
+      <%= button_to "Destroy this chromosome", chromosome_path(@chromosome), method: :delete, class: "mt-2 rounded-lg py-3 px-5 bg-teal-200 font-medium text-teal-700" %>
     </div>
-    <%= link_to "Back to chromosomes", chromosomes_path, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+    <%= link_to "Back to chromosomes", chromosomes_path, class: "ml-2 rounded-lg py-3 px-5 bg-teal-200 inline-block font-medium text-teal-700" %>
   </div>
 </div>

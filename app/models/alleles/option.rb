@@ -5,6 +5,10 @@ module Alleles
     self.table_name = :option_alleles
     include Inheritable
 
+    def crossover_algorithm
+      Organisms::Crossovers::Random
+    end
+
     def to_s
       "choices: #{choices}"
     end

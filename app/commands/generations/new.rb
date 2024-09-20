@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
 module Generations
-  class New < ApplicationCommand
-    requires :parent_generation
-    requires :offspring_generation
+  class New < GLCommand::Callable
+    requires :parent_generation,
+             :offspring_generation
     allows :organism_count
 
-    before :set_defaults
-
     def call
+      set_defaults
       while offspring_generation.organisms.count < organism_count
         children = Organisms::Procreate.call(parents:).children
         children.each { |child| child.update(generation: offspring_generation) }

@@ -1,0 +1,572 @@
+{"prompt": {
+  "3": {
+    "inputs": {
+      "seed": 8871389879847,
+      "steps": <%= @o[:first_pass_steps] %>,
+      "cfg": <%= @o[:first_pass_cfg] %>,
+      "sampler_name": "<%= @o[:first_pass_sampler_name] %>",
+      "scheduler": "<%= @o[:first_pass_scheduler] %>",
+      "denoise": 1,
+      "model": [
+        "202",
+        2
+      ],
+      "positive": [
+        "202",
+        0
+      ],
+      "negative": [
+        "202",
+        1
+      ],
+      "latent_image": [
+        "5",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
+  "4": {
+    "inputs": {
+      "ckpt_name": "<%= @o[:first_pass_ckpt_name] %>"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "First Pass Checkpoint"
+    }
+  },
+  "5": {
+    "inputs": {
+      "width": 512,
+      "height": 768,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Empty Latent Image"
+    }
+  },
+  "6": {
+    "inputs": {
+      "text": "a young slender busty woman,\nlong thin neck,\n\nsoft smile,\nwearing jeans, transparent shirt,\n\n(embedding:AnjelikaV2:0.25),\n(embedding:4nn4k3ndrick:0.25),\n(embedding:v1tell:0.25),",
+      "clip": [
+        "206",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "7": {
+    "inputs": {
+      "text": "makeup,\nfit, muscular,\nmonochrome,\nblack and white,\nembedding:badhandv4,\nembedding:bad-hands-5\nembedding:ng_deepnegative_v1_75t\nembedding:epiCPhoto-neg\nembedding:np_simple_negatives_v2-neg",
+      "clip": [
+        "206",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "31": {
+    "inputs": {
+      "upscale_method": "<%= @o[:upscale_method] %>",
+      "scale_by": 2,
+      "samples": [
+        "3",
+        0
+      ]
+    },
+    "class_type": "LatentUpscaleBy",
+    "_meta": {
+      "title": "Upscale Latent By"
+    }
+  },
+  "45": {
+    "inputs": {
+      "model_name": "bbox/face_yolov8m.pt"
+    },
+    "class_type": "UltralyticsDetectorProvider",
+    "_meta": {
+      "title": "UltralyticsDetectorProvider"
+    }
+  },
+  "51": {
+    "inputs": {
+      "guide_size": 768,
+      "guide_size_for": true,
+      "max_size": 1024,
+      "seed": 310622507111166,
+      "steps": 60,
+      "cfg": 6,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 0.5,
+      "feather": 24,
+      "noise_mask": true,
+      "force_inpaint": true,
+      "bbox_threshold": 0.2,
+      "bbox_dilation": 30,
+      "bbox_crop_factor": 3,
+      "sam_detection_hint": "none",
+      "sam_dilation": 231,
+      "sam_threshold": 0.46,
+      "sam_bbox_expansion": 115,
+      "sam_mask_hint_threshold": 0.61,
+      "sam_mask_hint_use_negative": "False",
+      "drop_size": 1,
+      "wildcard": "",
+      "cycle": 1,
+      "inpaint_model": false,
+      "noise_mask_feather": 20,
+      "image": [
+        "97",
+        0
+      ],
+      "model": [
+        "74",
+        0
+      ],
+      "clip": [
+        "74",
+        1
+      ],
+      "vae": [
+        "74",
+        2
+      ],
+      "positive": [
+        "53",
+        0
+      ],
+      "negative": [
+        "67",
+        0
+      ],
+      "bbox_detector": [
+        "45",
+        0
+      ],
+      "sam_model_opt": [
+        "62",
+        0
+      ],
+      "segm_detector_opt": [
+        "45",
+        1
+      ],
+      "detailer_hook": [
+        "65",
+        0
+      ]
+    },
+    "class_type": "FaceDetailer",
+    "_meta": {
+      "title": "FaceDetailer"
+    }
+  },
+  "53": {
+    "inputs": {
+      "text": "a portrait photo of a young girl,\nlooking at viewer,\n(freckles:0.8),\nsoft smile,\n\n(embedding:AnjelikaV2:0.25),\n(embedding:4nn4k3ndrick:0.25),\n(embedding:v1tell:0.25)\n",
+      "clip": [
+        "74",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "62": {
+    "inputs": {
+      "model_name": "sam_vit_b_01ec64.pth",
+      "device_mode": "Prefer GPU"
+    },
+    "class_type": "SAMLoader",
+    "_meta": {
+      "title": "SAMLoader (Impact)"
+    }
+  },
+  "65": {
+    "inputs": {
+      "mode": "768x768"
+    },
+    "class_type": "CoreMLDetailerHookProvider",
+    "_meta": {
+      "title": "CoreMLDetailerHookProvider"
+    }
+  },
+  "66": {
+    "inputs": {
+      "filename_prefix": "organisms/organism_<%= @organism.id %>",
+      "images": [
+        "51",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save Image"
+    }
+  },
+  "67": {
+    "inputs": {
+      "text": "makeup,\n\nembedding:epiCNegative",
+      "clip": [
+        "74",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "74": {
+    "inputs": {
+      "ckpt_name": "1.5/epicrealism_pureEvolution.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "Load Checkpoint"
+    }
+  },
+  "89": {
+    "inputs": {
+      "seed": 8871389879900,
+      "steps": <%= @o[:second_pass_steps]%>,
+      "cfg": <%= @o[:second_pass_cfg] %>,
+      "sampler_name": "<%= @o[:second_pass_sampler_name]%>",
+      "scheduler": "<%= @o[:second_pass_scheduler] %>",
+      "denoise": <%= @o[:second_pass_denoise] %>,
+      "model": [
+        "199",
+        2
+      ],
+      "positive": [
+        "199",
+        0
+      ],
+      "negative": [
+        "199",
+        1
+      ],
+      "latent_image": [
+        "31",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
+  "90": {
+    "inputs": {
+      "ckpt_name": "<%= @o[:second_pass_ckpt_name]%>"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "Load Checkpoint"
+    }
+  },
+  "92": {
+    "inputs": {
+      "text": "a young slender busty woman,\nlong thin neck,\nsoft smile,\n\nwearing jeans, transparent shirt,\n\n(embedding:AnjelikaV2:0.25),\n(embedding:4nn4k3ndrick:0.25),\n(embedding:v1tell:0.25),",
+      "clip": [
+        "210",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "93": {
+    "inputs": {
+      "text": "makeup,\nfit, muscular,\nmonochrome,\nblack and white,\nNipples,\nembedding:badhandv4,\nembedding:bad-hands-5\nembedding:ng_deepnegative_v1_75t\nembedding:epiCPhoto-neg\nembedding:np_simple_negatives_v2-neg",
+      "clip": [
+        "210",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "97": {
+    "inputs": {
+      "samples": [
+        "89",
+        0
+      ],
+      "vae": [
+        "90",
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "98": {
+    "inputs": {
+      "images": [
+        "97",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image"
+    }
+  },
+  "99": {
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "100": {
+    "inputs": {
+      "images": [
+        "99",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image"
+    }
+  },
+  "199": {
+    "inputs": {
+      "strength": 0.5,
+      "start_percent": 0,
+      "end_percent": 1,
+      "positive": [
+        "92",
+        0
+      ],
+      "negative": [
+        "93",
+        0
+      ],
+      "control_net": [
+        "200",
+        0
+      ],
+      "image": [
+        "201",
+        0
+      ],
+      "model_optional": [
+        "210",
+        0
+      ]
+    },
+    "class_type": "ACN_AdvancedControlNetApply",
+    "_meta": {
+      "title": "Apply Advanced ControlNet"
+    }
+  },
+  "200": {
+    "inputs": {
+      "control_net_name": "control_openpose-fp16.safetensors"
+    },
+    "class_type": "ControlNetLoader",
+    "_meta": {
+      "title": "Load ControlNet Model"
+    }
+  },
+  "201": {
+    "inputs": {
+      "image": "openpose-pose (20) 3.png",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "Load Image"
+    }
+  },
+  "202": {
+    "inputs": {
+      "strength": 0.49,
+      "start_percent": 0,
+      "end_percent": 0.8,
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "control_net": [
+        "200",
+        0
+      ],
+      "image": [
+        "201",
+        0
+      ],
+      "model_optional": [
+        "206",
+        0
+      ]
+    },
+    "class_type": "ACN_AdvancedControlNetApply",
+    "_meta": {
+      "title": "Apply Advanced ControlNet"
+    }
+  },
+  "204": {
+    "inputs": {
+      "switch_1": "On",
+      "lora_name_1": "1.5/body/round_breasts-SD-1.0.safetensors",
+      "model_weight_1": <%= @o[:first_pass_lora_round_breasts] %>, 
+      "clip_weight_1": <%= @o[:first_pass_lora_round_breasts] %>, 
+      "switch_2": "On",
+      "lora_name_2": "1.5/clothing/lowrise-step00010700.safetensors",
+      "model_weight_2": <%= @o[:first_pass_lora_lowrise] %>, 
+      "clip_weight_2": <%= @o[:first_pass_lora_lowrise] %>, 
+      "switch_3": "On",
+      "lora_name_3": "1.5/body/bgm-beta1.safetensors",
+      "model_weight_3": <%= @o[:first_pass_lora_bgm] %>, 
+      "clip_weight_3": <%= @o[:first_pass_lora_bgm] %>, 
+      "lora_stack": [
+        "205",
+        0
+      ]
+    },
+    "class_type": "CR LoRA Stack",
+    "_meta": {
+      "title": "First Pass Lora Stack 1"
+    }
+  },
+  "205": {
+    "inputs": {
+      "switch_1": "On",
+      "lora_name_1": "1.5/body/microwaistV05.safetensors",
+      "model_weight_1": <%= @o[:first_pass_lora_microwaist] %>, 
+      "clip_weight_1": <%= @o[:first_pass_lora_microwaist] %>, 
+      "switch_2": "Off",
+      "lora_name_2": "None",
+      "model_weight_2": 0,
+      "clip_weight_2": 0,
+      "switch_3": "Off",
+      "lora_name_3": "None",
+      "model_weight_3": 0,
+      "clip_weight_3": 0
+    },
+    "class_type": "CR LoRA Stack",
+    "_meta": {
+      "title": "First Pass Lora Stack 2"
+    }
+  },
+  "206": {
+    "inputs": {
+      "model": [
+        "4",
+        0
+      ],
+      "clip": [
+        "4",
+        1
+      ],
+      "lora_stack": [
+        "204",
+        0
+      ]
+    },
+    "class_type": "CR Apply LoRA Stack",
+    "_meta": {
+      "title": "CR Apply LoRA Stack"
+    }
+  },
+  "208": {
+    "inputs": {
+      "switch_1": "On",
+      "lora_name_1": "1.5/body/round_breasts-SD-1.0.safetensors",
+      "model_weight_1": <%= @o[:second_pass_lora_round_breasts] %>, 
+      "clip_weight_1": <%= @o[:second_pass_lora_round_breasts] %>, 
+      "switch_2": "On",
+      "lora_name_2": "1.5/clothing/lowrise-step00010700.safetensors",
+      "model_weight_2": <%= @o[:second_pass_lora_lowrise] %>, 
+      "clip_weight_2": <%= @o[:second_pass_lora_lowrise] %>, 
+      "switch_3": "On",
+      "lora_name_3": "1.5/body/bgm-beta1.safetensors",
+      "model_weight_3": <%= @o[:second_pass_lora_bgm] %>, 
+      "clip_weight_3": <%= @o[:second_pass_lora_bgm] %>, 
+      "lora_stack": [
+        "209",
+        0
+      ]
+    },
+    "class_type": "CR LoRA Stack",
+    "_meta": {
+      "title": "Second Pass Lora Stack 1"
+    }
+  },
+  "209": {
+    "inputs": {
+      "switch_1": "On",
+      "lora_name_1": "1.5/body/microwaistV05.safetensors",
+      "model_weight_1": <%= @o[:second_pass_lora_microwaist] %>, 
+      "clip_weight_1": <%= @o[:second_pass_lora_microwaist] %>, 
+      "switch_2": "Off",
+      "lora_name_2": "None",
+      "model_weight_2": 0,
+      "clip_weight_2": 0,
+      "switch_3": "Off",
+      "lora_name_3": "None",
+      "model_weight_3": 0,
+      "clip_weight_3": 0
+    },
+    "class_type": "CR LoRA Stack",
+    "_meta": {
+      "title": "Second Pass Lora Stack 2"
+    }
+  },
+  "210": {
+    "inputs": {
+      "model": [
+        "90",
+        0
+      ],
+      "clip": [
+        "90",
+        1
+      ],
+      "lora_stack": [
+        "208",
+        0
+      ]
+    },
+    "class_type": "CR Apply LoRA Stack",
+    "_meta": {
+      "title": "CR Apply LoRA Stack"
+    }
+  }
+}}

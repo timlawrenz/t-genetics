@@ -12,6 +12,7 @@ class Allele < ApplicationRecord
   scope :by_name, ->(name) { find_by(name:) }
 
   belongs_to :chromosome
+  has_many :values, dependent: :destroy
 
   def self.new_with_float(name:, minimum:, maximum:)
     new(name:, inheritable: Alleles::Float.create(minimum:, maximum:))
@@ -30,7 +31,7 @@ class Allele < ApplicationRecord
   end
 
   def crossover_algorithm
-    Organismsm::Crossovers::Average
+    Organisms::Crossovers::Average
   end
 
   def type

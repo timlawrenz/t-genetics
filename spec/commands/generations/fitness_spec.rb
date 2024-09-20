@@ -3,19 +3,15 @@
 require 'rails_helper'
 
 RSpec.describe Generations::Fitness do
-  subject(:call) { described_class.call(parameters) }
-
+  subject(:call) { described_class.call(generation:) }
+  let(:generation) { FactoryBot.create(:generation) }
 
   context 'without a generation' do
-    let(:parameters) { {} }
-
+    let(:generation) { nil }
     it { is_expected.to be_failure }
   end
 
   context 'when there are no organisms' do
-    let(:generation) { FactoryBot.create(:generation) }
-    let(:parameters) { { generation: } }
-
     it { is_expected.to be_success }
 
     it 'returns 0 as total_fitness' do
@@ -28,9 +24,6 @@ RSpec.describe Generations::Fitness do
   end
 
   context 'when there are no organisms with fitness' do
-    let(:generation) { FactoryBot.create(:generation) }
-    let(:parameters) { { generation: } }
-
     before do
       FactoryBot.create(:organism, generation:, fitness: nil)
     end
@@ -47,9 +40,6 @@ RSpec.describe Generations::Fitness do
   end
 
   context 'when all organisms have fitness' do
-    let(:generation) { FactoryBot.create(:generation) }
-    let(:parameters) { { generation: } }
-
     before do
       FactoryBot.create(:organism, generation:, fitness: 100)
       FactoryBot.create(:organism, generation:, fitness: 50)
@@ -68,9 +58,6 @@ RSpec.describe Generations::Fitness do
   end
 
   context 'when some organisms have fitness' do
-    let(:generation) { FactoryBot.create(:generation) }
-    let(:parameters) { { generation: } }
-
     before do
       FactoryBot.create(:organism, generation:, fitness: 100)
       FactoryBot.create(:organism, generation:, fitness: 50)

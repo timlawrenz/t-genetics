@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module Organisms
-  class SetValue < ApplicationCommand
-    requires :organism
-    requires :name
-    requires :value
+  class SetValue < GLCommand::Callable
+    requires :organism,
+             :name,
+             :value
 
     def call
       organism
@@ -12,6 +12,7 @@ module Organisms
         .by_name(name)
         .first
         .valuable
+        .reload
         .update(data: value)
     end
   end
