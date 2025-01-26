@@ -1,8 +1,7 @@
 require:
   - rubocop-rails
   - rubocop-rspec
-  - rubocop-factory_bot
-  - rubocop-capybara
+  - rubocop-performance
 
 AllCops:
   TargetRubyVersion: 3.1.3
@@ -42,8 +41,6 @@ RSpec/SubjectStub:
 RSpec/ScatteredSetup:
   Exclude:
     - 'spec/integration/**/*'
-FactoryBot/SyntaxMethods:
-  Enabled: false
 Style/Documentation:
   Enabled: false
 Style/RegexpLiteral:

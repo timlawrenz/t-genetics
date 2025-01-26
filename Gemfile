@@ -3,11 +3,12 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.1.4'
+ruby '3.4.1'
 
 gem 'aasm'
 gem 'bcrypt', '~> 3.1.7'
 gem 'bootsnap', require: false
+gem 'gl_command', git: 'https://github.com/givelively/gl_command.git'
 gem 'haml-rails'
 gem 'importmap-rails'
 gem 'oj'
@@ -20,8 +21,8 @@ gem 'sentry-ruby'
 gem 'sprockets-rails'
 gem 'stimulus-rails'
 gem 'tailwindcss-rails'
-gem 'gl_command', git: 'https://github.com/givelively/gl_command.git'
 gem 'turbo-rails'
+gem 'view_component'
 
 group :development, :test do
   gem 'brakeman'
@@ -34,6 +35,7 @@ group :development, :test do
 end
 
 group :development do
+  gem 'gl_lint', require: false
   gem 'listen'
   gem 'rspec-rails'
   gem 'rubocop', require: false

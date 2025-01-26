@@ -4,10 +4,12 @@ require 'rails_helper'
 
 RSpec.describe Generations::Fitness do
   subject(:call) { described_class.call(generation:) }
+
   let(:generation) { FactoryBot.create(:generation) }
 
   context 'without a generation' do
     let(:generation) { nil }
+
     it { is_expected.to be_failure }
   end
 

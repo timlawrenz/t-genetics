@@ -1,7 +1,6 @@
 .w-full
   = render partial: 'application/notice'
-  = render partial: 'application/table_header', locals: { klass: 'Chromosome' }
+  = render PageheaderComponent.new(klass_name: 'Chromosome')
 
   #chromosomes.min-w-full
-    %ul.grid.grid-cols-1.gap-x-6.gap-y-8.lg:grid-cols-3.xl:gap-x-8{ role: :list }
-      = render @chromosomes
+    = render @chromosomes

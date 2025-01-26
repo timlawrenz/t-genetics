@@ -4,17 +4,18 @@ require 'rails_helper'
 
 RSpec.describe Organisms::Crossover do
   context 'without organisms' do
-    subject(:call) { described_class.call() }
+    subject(:call) { described_class.call }
 
     it { is_expected.to be_failure }
   end
 
   context 'with organisms' do
+    subject(:call) { described_class.call(organisms:) }
+
     before do
       stub_const 'CROSS_OVER_RATE', 100
     end
 
-    subject(:call) { described_class.call(organisms:) }
     let(:parameters) { { organisms: } }
     let(:chromosome) { FactoryBot.create(:chromosome) }
     let(:alleles) { FactoryBot.create(:allele, chromosome:) }
@@ -36,7 +37,7 @@ RSpec.describe Organisms::Crossover do
     end
 
     it 'calls the crossover algorithm' do
-      expect { call }.to(change { organisms.map(&:reload).map(&:values) })
+      expect { call }.to(change { organisms.map { |organism| organism.reload.values } })
     end
   end
 end

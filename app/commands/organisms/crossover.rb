@@ -8,7 +8,7 @@ module Organisms
       organisms.first.chromosome.alleles.each do |allele|
         next unless rand < CROSS_OVER_RATE
 
-        puts "Crossover of #{allele.name}"
+        Rails.logger.debug { "Crossover of #{allele.name}" }
         values = allele.values.where(organism: organisms)
 
         o1 = values.first.organism
