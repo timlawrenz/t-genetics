@@ -15,24 +15,34 @@ RSpec.describe Generations::New do
     let(:child2_double) { instance_double(Organism, id: 202) }
 
     let(:pick_parent1_success_context) do
-      instance_double(GLCommand::Context, success?: true, failure?: false, organism: parent1_double, errors: ActiveModel::Errors.new(nil))
+      context_double = instance_double(GLCommand::Context, success?: true, failure?: false, errors: ActiveModel::Errors.new(nil))
+      allow(context_double).to receive(:organism).and_return(parent1_double)
+      context_double
     end
     let(:pick_parent2_success_context) do
-      instance_double(GLCommand::Context, success?: true, failure?: false, organism: parent2_double, errors: ActiveModel::Errors.new(nil))
+      context_double = instance_double(GLCommand::Context, success?: true, failure?: false, errors: ActiveModel::Errors.new(nil))
+      allow(context_double).to receive(:organism).and_return(parent2_double)
+      context_double
     end
     let(:pick_failure_context) do
       errors = ActiveModel::Errors.new(nil)
       errors.add(:base, 'Pick failed')
-      instance_double(GLCommand::Context, success?: false, failure?: true, organism: nil, errors:)
+      context_double = instance_double(GLCommand::Context, success?: false, failure?: true, errors:)
+      allow(context_double).to receive(:organism).and_return(nil)
+      context_double
     end
 
     let(:procreate_success_context) do
-      instance_double(GLCommand::Context, success?: true, failure?: false, children: [child1_double, child2_double], errors: ActiveModel::Errors.new(nil))
+      context_double = instance_double(GLCommand::Context, success?: true, failure?: false, errors: ActiveModel::Errors.new(nil))
+      allow(context_double).to receive(:children).and_return([child1_double, child2_double])
+      context_double
     end
     let(:procreate_failure_context) do
       errors = ActiveModel::Errors.new(nil)
       errors.add(:base, 'Procreate failed')
-      instance_double(GLCommand::Context, success?: false, failure?: true, children: [], errors:)
+      context_double = instance_double(GLCommand::Context, success?: false, failure?: true, errors:)
+      allow(context_double).to receive(:children).and_return([])
+      context_double
     end
 
     # Default organism_count for most tests
@@ -157,11 +167,8 @@ RSpec.describe Generations::New do
       it 'fails (because Procreate will fail with one parent)' do
         procreate_errors = ActiveModel::Errors.new(nil)
         procreate_errors.add(:parents, 'must be an array of two parents')
-        procreate_one_parent_failure_context = instance_double(GLCommand::Context,
-                                                               success?: false,
-                                                               failure?: true,
-                                                               children: [],
-                                                               errors: procreate_errors)
+        procreate_one_parent_failure_context = instance_double(GLCommand::Context, success?: false, failure?: true, errors: procreate_errors)
+        allow(procreate_one_parent_failure_context).to receive(:children).and_return([])
         allow(Organisms::Procreate).to receive(:call)
           .with(parents: [parent1_double], target_generation: offspring_generation_double)
           .and_return(procreate_one_parent_failure_context)
