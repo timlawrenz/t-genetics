@@ -147,4 +147,45 @@ RSpec.describe Organisms::Create do
       end
     end
   end
+
+  describe '#rollback' do
+    let(:generation) { instance_double(Generation, id: 1) }
+    let(:created_organism) { instance_double(Organism, id: 10, persisted?: true) }
+    let(:command_context) { GLCommand::Context.new(organism: created_organism) }
+    subject(:command_instance) { described_class.new(command_context) }
+
+    before do
+      # Allow the created_organism double to respond to destroy
+      allow(created_organism).to receive(:destroy)
+    end
+
+    it 'destroys the created organism' do
+      command_instance.rollback
+      expect(created_organism).to have_received(:destroy)
+    end
+
+    context 'when the organism in the context is nil' do
+      let(:command_context) { GLCommand::Context.new(organism: nil) }
+
+      it 'does not attempt to destroy' do
+        expect { command_instance.rollback }.not_to raise_error
+        # No explicit check for `destroy` not being called as it wouldn't be on a nil object.
+        # The main thing is it doesn't error out.
+      end
+    end
+
+    context 'when the organism in the context is not persisted' do
+      let(:non_persisted_organism) { instance_double(Organism, id: nil, persisted?: false) }
+      let(:command_context) { GLCommand::Context.new(organism: non_persisted_organism) }
+
+      before do
+        allow(non_persisted_organism).to receive(:destroy) # Should not be called
+      end
+
+      it 'does not attempt to destroy' do
+        command_instance.rollback
+        expect(non_persisted_organism).not_to have_received(:destroy)
+      end
+    end
+  end
 end

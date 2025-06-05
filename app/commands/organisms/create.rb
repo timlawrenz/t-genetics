@@ -11,5 +11,10 @@ module Organisms
         context.organism.values << Value.new_from(allele)
       end
     end
+
+    def rollback
+      # Ensure context.organism exists and is persisted before attempting to destroy
+      context.organism&.destroy if context.organism&.persisted?
+    end
   end
 end
