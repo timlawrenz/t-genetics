@@ -3,6 +3,7 @@
 module Generations
   class Pick < GLCommand::Callable
     requires generation: Generation
+    returns :organism
 
     def call
       total_fitness = Generations::Fitness.call(generation:).total_fitness
