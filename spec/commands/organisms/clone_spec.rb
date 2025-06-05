@@ -85,13 +85,13 @@ RSpec.describe Organisms::Clone do
 
     context 'when original organism has a specific fitness' do
       before do
-        original_organism.update!(fitness: 0.75)
+        original_organism.update!(fitness: 2) # Use an integer value
       end
 
       it 'copies the fitness to the cloned organism' do
         # This assumes the Clone command is responsible for copying fitness.
         # If fitness should be reset or calculated anew, this test would need adjustment.
-        expect(command_call.dolly_clone.fitness).to eq 0.75
+        expect(command_call.dolly_clone.fitness).to eq 2 # Expect the integer value
       end
     end
 
