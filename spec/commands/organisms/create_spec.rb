@@ -24,15 +24,13 @@ RSpec.describe Organisms::Create do
       # against the class it's doubling. GLCommand uses these for validation.
       allow(generation).to receive(:is_a?).with(Generation).and_return(true)
       allow(generation).to receive(:kind_of?).with(Generation).and_return(true)
-      # Allow other is_a?/kind_of? checks to behave as default for a double.
-      allow(generation).to receive(:is_a?).with(anything).and_call_original
-      allow(generation).to receive(:kind_of?).with(anything).and_call_original
+      # The instance_double will correctly handle other is_a?/kind_of? checks
+      # (e.g., is_a?(Object) will be true, is_a?(String) will be false).
 
       # Allow the new_organism double to pass GLCommand's type check for 'returns'.
       allow(new_organism).to receive(:is_a?).with(Organism).and_return(true)
       allow(new_organism).to receive(:kind_of?).with(Organism).and_return(true)
-      allow(new_organism).to receive(:is_a?).with(anything).and_call_original
-      allow(new_organism).to receive(:kind_of?).with(anything).and_call_original
+      # The instance_double will correctly handle other is_a?/kind_of? checks.
 
       # Stub the generation's chromosome and its alleles
       allow(generation).to receive(:chromosome).and_return(chromosome)
