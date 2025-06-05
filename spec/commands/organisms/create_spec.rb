@@ -19,6 +19,21 @@ RSpec.describe Organisms::Create do
     let(:values_association_proxy) { double('ActiveRecord::Associations::CollectionProxy') } # rubocop:disable RSpec/VerifiedDoubles
 
     before do
+      # Allow the generation double to pass GLCommand's type check for 'requires'.
+      # RSpec's instance_double doesn't automatically pass is_a?/kind_of? checks
+      # against the class it's doubling. GLCommand uses these for validation.
+      allow(generation).to receive(:is_a?).with(Generation).and_return(true)
+      allow(generation).to receive(:kind_of?).with(Generation).and_return(true)
+      # Allow other is_a?/kind_of? checks to behave as default for a double.
+      allow(generation).to receive(:is_a?).with(anything).and_call_original
+      allow(generation).to receive(:kind_of?).with(anything).and_call_original
+
+      # Allow the new_organism double to pass GLCommand's type check for 'returns'.
+      allow(new_organism).to receive(:is_a?).with(Organism).and_return(true)
+      allow(new_organism).to receive(:kind_of?).with(Organism).and_return(true)
+      allow(new_organism).to receive(:is_a?).with(anything).and_call_original
+      allow(new_organism).to receive(:kind_of?).with(anything).and_call_original
+
       # Stub the generation's chromosome and its alleles
       allow(generation).to receive(:chromosome).and_return(chromosome)
       allow(chromosome).to receive(:alleles).and_return(alleles)
