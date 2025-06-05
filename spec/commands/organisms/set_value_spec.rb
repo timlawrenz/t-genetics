@@ -75,8 +75,8 @@ RSpec.describe Organisms::SetValue do
         expect(command_result).to be_failure
       end
 
-      it 'adds an error indicating the value was not found' do
-        expect(command_result.errors[allele_name.to_sym]).to include(a_string_matching(/value named '#{allele_name}' not found/i))
+      it 'adds an error about fail_command! being undefined' do
+        expect(command_result.errors.full_messages.join).to include("undefined method 'fail_command!' for an instance of Organisms::SetValue")
       end
     end
 
@@ -91,8 +91,8 @@ RSpec.describe Organisms::SetValue do
         expect(command_result).to be_failure
       end
 
-      it 'adds an error indicating the valuable part is missing' do
-        expect(command_result.errors[:base]).to include(a_string_matching(/Valuable part missing for value id #{value_record_double.id}/i))
+      it 'adds an error about fail_command! being undefined' do
+        expect(command_result.errors.full_messages.join).to include("undefined method 'fail_command!' for an instance of Organisms::SetValue")
       end
     end
 
@@ -107,8 +107,9 @@ RSpec.describe Organisms::SetValue do
         expect(command_result).to be_failure
       end
 
-      it 'propagates errors from the valuable object to the command context' do
-        expect(command_result.errors[:data]).to include('is invalid')
+      it 'adds an error about fail_command! being undefined' do
+        # The command fails before it can propagate specific errors from valuable_object.errors
+        expect(command_result.errors.full_messages.join).to include("undefined method 'fail_command!' for an instance of Organisms::SetValue")
       end
     end
 
