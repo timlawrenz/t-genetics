@@ -32,7 +32,7 @@ RSpec.describe Organisms::Clone do
       original_organism.reload
     end
 
-    subject(:command_call) { described_class.call(organism: original_organism) }
+    subject(:command_call) { described_class.call(organism: original_organism, target_generation: original_organism.generation) }
 
     context 'when the original organism has values' do
       it 'succeeds' do
@@ -98,7 +98,7 @@ RSpec.describe Organisms::Clone do
     context 'when original organism has no values' do
       let!(:organism_no_values) { FactoryBot.create(:organism, generation:) }
 
-      subject(:command_call_no_values) { described_class.call(organism: organism_no_values) }
+      subject(:command_call_no_values) { described_class.call(organism: organism_no_values, target_generation: organism_no_values.generation) }
 
       before do
         # Ensure this organism truly has no values
@@ -119,7 +119,7 @@ RSpec.describe Organisms::Clone do
 
     context 'when the command fails (e.g., organism is nil or invalid)' do
       it 'is not successful if organism is nil' do
-        result = described_class.call(organism: nil)
+        result = described_class.call(organism: nil, target_generation: generation)
         expect(result).not_to be_success
         # Depending on GLCommand setup, check for errors
         # expect(result.errors).not_to be_empty
