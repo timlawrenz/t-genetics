@@ -75,10 +75,8 @@ RSpec.describe Organisms::SetValue do
         expect(command_result).to be_failure
       end
 
-      it 'adds a NoMethodError for "valuable" to context errors' do
-        # GLCommand catches the NoMethodError and adds it to the context.
-        error_message = command_result.errors.full_messages.join
-        expect(error_message).to match(/undefined method `valuable' for nil:NilClass/i)
+      it 'adds an error indicating the value was not found' do
+        expect(command_result.errors[allele_name.to_sym]).to include(a_string_matching(/value named '#{allele_name}' not found/i))
       end
     end
 
@@ -93,9 +91,8 @@ RSpec.describe Organisms::SetValue do
         expect(command_result).to be_failure
       end
 
-      it 'adds a NoMethodError for "reload" to context errors' do
-        error_message = command_result.errors.full_messages.join
-        expect(error_message).to match(/undefined method `reload' for nil:NilClass/i)
+      it 'adds an error indicating the valuable part is missing' do
+        expect(command_result.errors[:base]).to include(a_string_matching(/Valuable part missing for value id #{value_record_double.id}/i))
       end
     end
 
@@ -103,19 +100,15 @@ RSpec.describe Organisms::SetValue do
       before do
         allow(valuable_object_double).to receive(:update).with(data: new_data_value).and_return(false)
         # Simulate errors being added to the valuable_object_double by ActiveRecord
-        active_model_errors.add(:data, 'is invalid')
+        active_model_errors.add(:data, 'is invalid') # Example error
       end
 
-      # IMPORTANT: This test reflects the current behavior of the command.
-      # The command does not check the return value of `update` or explicitly handle `false`.
-      # Therefore, GLCommand considers it a success if no exception is raised.
-      it 'succeeds (as per current command implementation)' do
-        expect(command_result).to be_success
+      it 'fails' do
+        expect(command_result).to be_failure
       end
 
-      it 'does not propagate errors from the valuable object to the command context (as per current command implementation)' do
-        # Since the command doesn't check `update`'s return or copy errors when it's false.
-        expect(command_result.errors).to be_empty
+      it 'propagates errors from the valuable object to the command context' do
+        expect(command_result.errors[:data]).to include('is invalid')
       end
     end
 
