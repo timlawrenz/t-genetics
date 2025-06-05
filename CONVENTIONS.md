@@ -1,4 +1,3 @@
-NameError:
 *   **Controller Responsibilities:** Controllers focus on auth (using **Pundit**), input validation, calling `GLCommand`, and handling command results.
 *   **Avoid Domain Logic in Controllers:** Keep domain logic out of controllers; delegate it to `GLCommand`s or service layers.
 *   **Use `GLCommand` for Business Logic:** Isolate and chain individual steps in business logic flows using the `gl_command` gem (https://github.com/givelively/gl_command).
