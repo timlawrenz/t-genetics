@@ -31,6 +31,9 @@ RSpec.describe Organisms::Create do
       allow(new_organism).to receive(:is_a?).with(Organism).and_return(true)
       allow(new_organism).to receive(:kind_of?).with(Organism).and_return(true)
       # The instance_double will correctly handle other is_a?/kind_of? checks.
+      # Allow new_organism to respond to persisted? for rollback scenarios
+      allow(new_organism).to receive(:persisted?).and_return(true) # Assume it's persisted if created
+      allow(new_organism).to receive(:destroy) # Allow destroy for rollback
 
       # Stub the generation's chromosome and its alleles
       allow(generation).to receive(:chromosome).and_return(chromosome)
@@ -149,36 +152,39 @@ RSpec.describe Organisms::Create do
   end
 
   describe '#rollback' do
-    let(:generation) { instance_double(Generation, id: 1) }
-    let(:created_organism) { instance_double(Organism, id: 10, persisted?: true) }
-    let(:command_context) { GLCommand::Context.new(organism: created_organism) }
+    # Pass the command class to GLCommand::Context as its first argument
+    let(:command_context) { GLCommand::Context.new(described_class) }
     subject(:command_instance) { described_class.new(command_context) }
 
-    before do
-      # Allow the created_organism double to respond to destroy
-      allow(created_organism).to receive(:destroy)
-    end
+    context 'when the organism in context is persisted' do
+      let(:created_organism) { instance_double(Organism, id: 10, persisted?: true) }
 
-    it 'destroys the created organism' do
-      command_instance.rollback
-      expect(created_organism).to have_received(:destroy)
+      before do
+        command_context.organism = created_organism # Set the organism on the context
+        allow(created_organism).to receive(:destroy)
+      end
+
+      it 'destroys the created organism' do
+        command_instance.rollback
+        expect(created_organism).to have_received(:destroy)
+      end
     end
 
     context 'when the organism in the context is nil' do
-      let(:command_context) { GLCommand::Context.new(organism: nil) }
+      before do
+        command_context.organism = nil # Ensure organism is nil on the context
+      end
 
-      it 'does not attempt to destroy' do
+      it 'does not attempt to destroy and does not raise error' do
         expect { command_instance.rollback }.not_to raise_error
-        # No explicit check for `destroy` not being called as it wouldn't be on a nil object.
-        # The main thing is it doesn't error out.
       end
     end
 
     context 'when the organism in the context is not persisted' do
       let(:non_persisted_organism) { instance_double(Organism, id: nil, persisted?: false) }
-      let(:command_context) { GLCommand::Context.new(organism: non_persisted_organism) }
 
       before do
+        command_context.organism = non_persisted_organism # Set the non-persisted organism
         allow(non_persisted_organism).to receive(:destroy) # Should not be called
       end
 
