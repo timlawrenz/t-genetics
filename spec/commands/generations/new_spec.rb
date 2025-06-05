@@ -14,12 +14,26 @@ RSpec.describe Generations::New do
     let(:child1_double) { instance_double(Organism, id: 201) }
     let(:child2_double) { instance_double(Organism, id: 202) }
 
-    let(:pick_parent1_success_context) { GLCommand::Context.new(Generations::Pick, success: true, organism: parent1_double) }
-    let(:pick_parent2_success_context) { GLCommand::Context.new(Generations::Pick, success: true, organism: parent2_double) }
-    let(:pick_failure_context) { GLCommand::Context.new(Generations::Pick, success: false, errors: { base: ['Pick failed'] }) }
+    let(:pick_parent1_success_context) do
+      instance_double(GLCommand::Context, success?: true, failure?: false, organism: parent1_double, errors: ActiveModel::Errors.new(nil))
+    end
+    let(:pick_parent2_success_context) do
+      instance_double(GLCommand::Context, success?: true, failure?: false, organism: parent2_double, errors: ActiveModel::Errors.new(nil))
+    end
+    let(:pick_failure_context) do
+      errors = ActiveModel::Errors.new(nil)
+      errors.add(:base, 'Pick failed')
+      instance_double(GLCommand::Context, success?: false, failure?: true, organism: nil, errors:)
+    end
 
-    let(:procreate_success_context) { GLCommand::Context.new(Organisms::Procreate, success: true, children: [child1_double, child2_double]) }
-    let(:procreate_failure_context) { GLCommand::Context.new(Organisms::Procreate, success: false, errors: { base: ['Procreate failed'] }) }
+    let(:procreate_success_context) do
+      instance_double(GLCommand::Context, success?: true, failure?: false, children: [child1_double, child2_double], errors: ActiveModel::Errors.new(nil))
+    end
+    let(:procreate_failure_context) do
+      errors = ActiveModel::Errors.new(nil)
+      errors.add(:base, 'Procreate failed')
+      instance_double(GLCommand::Context, success?: false, failure?: true, children: [], errors:)
+    end
 
     # Default organism_count for most tests
     let(:organism_count) { 2 }
@@ -141,10 +155,16 @@ RSpec.describe Generations::New do
       end
 
       it 'fails (because Procreate will fail with one parent)' do
-        # Procreate adds an error if parents.size != 2
+        procreate_errors = ActiveModel::Errors.new(nil)
+        procreate_errors.add(:parents, 'must be an array of two parents')
+        procreate_one_parent_failure_context = instance_double(GLCommand::Context,
+                                                               success?: false,
+                                                               failure?: true,
+                                                               children: [],
+                                                               errors: procreate_errors)
         allow(Organisms::Procreate).to receive(:call)
           .with(parents: [parent1_double], target_generation: offspring_generation_double)
-          .and_return(GLCommand::Context.new(Organisms::Procreate, success: false, errors: { parents: ['must be an array of two parents'] }))
+          .and_return(procreate_one_parent_failure_context)
         expect(command_call).to be_failure
         expect(command_call.errors[:parents]).to include('must be an array of two parents')
       end
