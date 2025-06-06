@@ -54,7 +54,14 @@ The system is designed to:
 
 ## Key Components
 
-*   **Models (`app/models`):** Define the core data structures like `Chromosome`, `Allele`, `Generation`, `Organism`, and `Value`. Different allele types (`Alleles::Float`, `Alleles::Integer`, etc.) and their corresponding value types (`Values::Float`, `Values::Integer`, etc.) are implemented using single table inheritance or polymorphic associations.
+*   **Models (`app/models`):** Define the core data structures like `Chromosome`, `Allele`, `Generation`, `Organism`, and `Value`. Different allele types (`Alleles::Float`, `Alleles::Integer`, etc.) and their corresponding value types (`Values::Float`, `Values::Integer`, etc.) are implemented using polymorphic associations with specific backing tables.
+*   **Model Concerns (`app/models/concerns`):** Contain shared functionality mixed into models. Key examples include `Inheritable` (for different allele types) and `Valuable` (for different value types associated with alleles).
+*   **Commands (`app/commands`):** Encapsulate business logic for evolutionary operations and other discrete actions (e.g., `Generations::Fitness`, `Organisms::Procreate`, `Organisms::Crossover`). These follow the `gl_command` pattern for callable service objects.
+*   **Controllers (`app/controllers`):** Handle web requests, focusing on authentication, input validation, calling appropriate commands, and rendering responses. They primarily manage `Chromosome`s and `Allele`s through the UI.
+*   **Views (`app/views`):** Standard Rails views that provide the HTML structure for the user interface.
+*   **ViewComponents (`app/components`):** Reusable UI elements (e.g., `ChromosomeComponent`, `PageheaderComponent`) used to build the views, promoting modularity and testability in the frontend layer.
+*   **Database Migrations (`db/migrate`):** Define and manage changes to the database schema over time.
+*   **Tests (`spec/`):** Automated tests to ensure code quality and correctness. This includes unit tests for models and commands, request specs for controller actions and authentication, and potentially integration specs for critical flows, as outlined in `CONVENTIONS.md`.
 
 ## Genetic Algorithm Process
 
@@ -101,10 +108,6 @@ The application implements a genetic algorithm with the following key steps:
         *   Calls `Organisms::Procreate` to generate children from these parents.
         *   Assigns these newly created children to the `offspring_generation`.
     *   This process continues until the `offspring_generation` reaches its target `organism_count`. This implements a generational replacement strategy.
-*   **Commands (`app/commands`):** Encapsulate business logic for evolutionary operations (e.g., `Generations::Fitness`, `Organisms::Procreate`, `Organisms::Crossover`). These likely use the `gl_command` gem.
-*   **Controllers (`app/controllers`):** Handle web requests, primarily for managing `Chromosome`s and `Allele`s.
-*   **Views (`app/views`):** Provide the user interface for interacting with the application.
-*   **Database Migrations (`db/migrate`):** Define the database schema.
 
 ## Further Development
 
