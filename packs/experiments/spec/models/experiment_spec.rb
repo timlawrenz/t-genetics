@@ -13,6 +13,13 @@ RSpec.describe Experiment do
     it { is_expected.to validate_presence_of(:external_entity_id) }
     it { is_expected.to validate_presence_of(:external_entity_type) }
     # it { is_expected.to validate_presence_of(:status) } # AASM handles status presence and inclusion in states
+
+    it { is_expected.to validate_presence_of(:feedback_percentage_threshold) }
+    it { is_expected.to validate_numericality_of(:feedback_percentage_threshold).is_greater_than_or_equal_to(0.0).is_less_than_or_equal_to(1.0) }
+    it { is_expected.to validate_presence_of(:min_organisms_with_feedback) }
+    it { is_expected.to validate_numericality_of(:min_organisms_with_feedback).only_integer.is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_presence_of(:suggestion_count_threshold_multiplier) }
+    it { is_expected.to validate_numericality_of(:suggestion_count_threshold_multiplier).is_greater_than_or_equal_to(0.0) }
   end
 
   describe 'AASM states' do
