@@ -31,3 +31,45 @@ The `Experiment` model allows users to:
 *   Store results or key metrics indirectly by linking to the `current_generation` and its associated `Organism`s.
 
 This model provides a way to organize and manage multiple instances of genetic algorithm executions, making it easier to compare results, reproduce experiments, and manage complex evolutionary studies.
+
+## Supporting Model: `PerformanceLog`
+
+The `PerformanceLog` model records each instance where an organism's genetic makeup (its values) is suggested for use, and the outcome of that suggestion.
+
+### Key Attributes:
+
+*   `experiment_id`: Foreign key to `Experiment`, linking the log entry to a specific experiment.
+*   `organism_id`: Foreign key to `Organism`, identifying the organism whose values were suggested.
+*   `suggested_at`: Timestamp indicating when the organism's values were suggested.
+*   `outcome_recorded_at`: Timestamp indicating when the outcome of the suggestion was recorded (nullable).
+*   `outcome_metrics`: JSONB field to store rich contextual data about the outcome (nullable).
+*   `fitness_input_value`: A float value that might be used as an input to a fitness function or represents a direct performance measure (nullable).
+
+### Purpose and Usage:
+
+The `PerformanceLog` model is designed to:
+
+*   Track how often and when specific organisms (and their genetic configurations) are chosen or suggested for a task.
+*   Record the performance or outcome associated with using an organism's configuration.
+*   Provide data for more detailed analysis of an experiment's progress, beyond simple generation-based fitness.
+*   Help in understanding which genetic traits lead to successful outcomes in the context of the `external_entity` the experiment is tied to.
+
+## Key Commands
+
+### `Experiments::Setup`
+
+This command initializes a new experiment.
+
+*   **Purpose:** To create all necessary records for starting a new evolutionary run, including the initial `Generation` of `Organism`s.
+*   **Inputs:**
+    *   `external_entity`: A polymorphic ActiveRecord object to which the experiment is related (e.g., a project, a user task). (Required)
+    *   `chromosome`: A pre-existing, persisted `Chromosome` record that defines the genetic structure for the experiment. (Required)
+    *   `experiment_configuration`: An optional hash to store specific settings for the experiment (e.g., `{ population_size: 50 }`). If `population_size` is not provided, it defaults to 10.
+*   **Output:**
+    *   `experiment`: The newly created `Experiment` record, which will be linked to the provided `chromosome`, the `external_entity`, and a newly created initial `Generation` populated with organisms.
+*   **Process:**
+    1.  Validates that the provided `chromosome` is a persisted `Chromosome` record.
+    2.  Creates an initial `Generation` (iteration 0) associated with the `chromosome`.
+    3.  Populates this initial `Generation` with a number of `Organism`s (defaulting to 10, or as specified in `experiment_configuration[:population_size]`). Each `Organism` is created using `Organisms::Create`, which initializes its genetic `Value`s randomly based on the `Allele` definitions in the `chromosome`.
+    4.  Creates an `Experiment` record, linking it to the `external_entity`, `chromosome`, the new `current_generation`, and storing any `experiment_configuration`. The initial status is set to "initialized".
+*   **Rollback:** If any step in the creation process fails (e.g., database save error), the entire operation is rolled back, ensuring no partial experiment setup is left behind. If this command is part of a larger chain of commands and a subsequent command fails, the `rollback` method of `Experiments::Setup` will destroy the created `Experiment` and its initial `Generation` (and associated `Organism`s via `dependent: :destroy` if configured). The input `Chromosome` is not affected by the rollback.

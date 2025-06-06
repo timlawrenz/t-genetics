@@ -60,6 +60,8 @@ The system is designed to:
 *   **Controllers (`app/controllers`):** Handle web requests, focusing on authentication, input validation, calling appropriate commands, and rendering responses. They primarily manage `Chromosome`s and `Allele`s through the UI.
 *   **Views (`app/views`):** Standard Rails views that provide the HTML structure for the user interface.
 *   **ViewComponents (`app/components`):** Reusable UI elements (e.g., `ChromosomeComponent`, `PageheaderComponent`) used to build the views, promoting modularity and testability in the frontend layer.
+*   **Packs (`packs/`):** Domain-specific code is organized into packs.
+    *   **Experiments (`packs/experiments`):** Manages `Experiment` records, which track and configure runs of genetic algorithms. This includes the `Experiment` model itself, the `PerformanceLog` model for tracking organism performance suggestions, and commands like `Experiments::Setup` to initialize new experiments.
 *   **Database Migrations (`db/migrate`):** Define and manage changes to the database schema over time.
 *   **Tests (`spec/`):** Automated tests to ensure code quality and correctness. This includes unit tests for models and commands, request specs for controller actions and authentication, and potentially integration specs for critical flows, as outlined in `CONVENTIONS.md`.
 
