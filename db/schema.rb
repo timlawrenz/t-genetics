@@ -41,6 +41,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_06_103015) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "experiments", force: :cascade do |t|
+    t.bigint "chromosome_id", null: false
+    t.string "external_entity_id"
+    t.string "external_entity_type"
+    t.string "status"
+    t.bigint "current_generation_id"
+    t.jsonb "configuration", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["chromosome_id"], name: "index_experiments_on_chromosome_id"
+    t.index ["current_generation_id"], name: "index_experiments_on_current_generation_id"
+    t.index ["external_entity_id", "external_entity_type"], name: "index_experiments_on_external_entity"
+  end
+
   create_table "float_alleles", force: :cascade do |t|
     t.float "minimum", default: 0.0, null: false
     t.float "maximum", default: 1.0, null: false
@@ -116,6 +130,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_06_103015) do
   end
 
   add_foreign_key "alleles", "chromosomes"
+  add_foreign_key "experiments", "chromosomes"
+  add_foreign_key "experiments", "generations", column: "current_generation_id"
   add_foreign_key "generations", "chromosomes"
   add_foreign_key "organisms", "generations"
   add_foreign_key "relationships", "chromosomes", column: "child_id"
