@@ -117,3 +117,27 @@ This command records the outcome of a previously suggested organism, updating it
         *   Sets `outcome_recorded_at` to the current time.
     3.  If the update fails (e.g., due to validations, though `PerformanceLog` currently has few), the command fails.
 *   **Rollback:** If this command succeeds but a subsequent command in a chain fails, its `rollback` method will attempt to revert the `fitness_input_value`, `outcome_metrics`, and `outcome_recorded_at` fields of the `PerformanceLog` to their values before this command was executed.
+
+### `Experiments::EvaluateAndEvolve`
+
+This command evaluates the fitness of organisms in an experiment's current generation based on their performance logs, and then triggers the evolution of a new generation.
+
+*   **Purpose:** To automate the cycle of fitness evaluation and breeding for an ongoing experiment.
+*   **Inputs:**
+    *   `experiment`: An instance of the `Experiment` model. (Required)
+*   **Outputs:**
+    *   `new_generation`: The newly created and populated `Generation` instance, which becomes the experiment's new `current_generation`.
+*   **Process:**
+    1.  Ensures the `experiment` has a `current_generation` and that the experiment is in a `running` state (it will attempt to transition from `pending` to `running` if possible).
+    2.  For each `Organism` in the `experiment.current_generation`:
+        *   It finds all associated `PerformanceLog` entries for the current `experiment` and `organism` that have a `fitness_input_value`.
+        *   It calculates the average of these `fitness_input_value`s. If no such logs exist, fitness defaults to `0.0`.
+        *   It updates the `fitness` attribute of the `Organism` with this calculated average.
+    3.  A new `Generation` record (the `offspring_generation`) is created, with its `iteration` number incremented from the `current_generation`.
+    4.  The core `Generations::New` command is called. This command takes the `current_generation` (now with updated organism fitness values) as the `parent_generation` and the newly created `offspring_generation`. It populates the `offspring_generation` with new organisms based on selection, crossover, and mutation. The number of organisms created is typically based on the `population_size` in the `experiment.configuration`.
+    5.  If the evolution is successful, the `experiment.current_generation` is updated to point to this new `offspring_generation`.
+    6.  All these steps (fitness updates, new generation creation, experiment update) are performed within a database transaction to ensure atomicity. If any step fails, the transaction is rolled back.
+*   **Rollback:** If the `EvaluateAndEvolve` command itself succeeds but a subsequent command in a GLCommand chain fails, its `rollback` method will:
+    *   Revert the `experiment.current_generation` to the generation that was current before this command ran.
+    *   Destroy the newly created (offspring) generation and its organisms.
+    *   Attempt to revert the `fitness` values of the organisms in the previous generation to what they were before this command's evaluation step.
