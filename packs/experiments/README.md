@@ -73,3 +73,23 @@ This command initializes a new experiment.
     3.  Populates this initial `Generation` with a number of `Organism`s (defaulting to 10, or as specified in `experiment_configuration[:population_size]`). Each `Organism` is created using `Organisms::Create`, which initializes its genetic `Value`s randomly based on the `Allele` definitions in the `chromosome`.
     4.  Creates an `Experiment` record, linking it to the `external_entity`, `chromosome`, the new `current_generation`, and storing any `experiment_configuration`. The initial status is set to "initialized".
 *   **Rollback:** If any step in the creation process fails (e.g., database save error), the entire operation is rolled back, ensuring no partial experiment setup is left behind. If this command is part of a larger chain of commands and a subsequent command fails, the `rollback` method of `Experiments::Setup` will destroy the created `Experiment` and its initial `Generation` (and associated `Organism`s via `dependent: :destroy` if configured). The input `Chromosome` is not affected by the rollback.
+
+### `Experiments::RequestSuggestion`
+
+This command selects an organism from an experiment's current generation for a "suggestion" (e.g., to be used in an external process) and logs this event.
+
+*   **Purpose:** To choose an organism based on a defined strategy (MVP: least selected) and record that it has been suggested.
+*   **Inputs:**
+    *   `experiment`: An instance of the `Experiment` model. (Required)
+*   **Outputs:**
+    *   `organism`: The selected `Organism` instance.
+    *   `performance_log`: The newly created `PerformanceLog` entry for this suggestion.
+*   **Process:**
+    1.  Identifies the `current_generation` of the provided `experiment`. Fails if no current generation exists or if it contains no organisms.
+    2.  Selects an `Organism` from this generation. The MVP strategy is "least selected":
+        *   For each organism in the current generation, it counts the number of existing `PerformanceLog` entries associated with *both* that specific organism *and* the current `experiment`.
+        *   It then picks an organism (randomly, in case of ties) that has the minimum count of such logs. This prioritizes organisms that have been suggested fewer times for this particular experiment.
+    3.  Creates a new `PerformanceLog` record, linking it to the `experiment` and the selected `organism`. The `suggested_at` timestamp is set to the current time.
+    4.  If the `PerformanceLog` fails to save, the command fails.
+    5.  Returns the selected `organism` and the new `performance_log`.
+*   **Rollback:** If this command succeeds but a subsequent command in a chain fails, its `rollback` method will destroy the `PerformanceLog` record that was created.
