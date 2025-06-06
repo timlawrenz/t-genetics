@@ -1,4 +1,4 @@
-enforce_dependency: true
+enforce_dependencies: true
 enforce_privacy: true
 # metadata:
 #   owner: YourTeam # Optional: Specify team ownership
