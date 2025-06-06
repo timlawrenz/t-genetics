@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_06_110000) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_06_110001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -50,6 +50,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_06_110000) do
     t.jsonb "configuration", default: {}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "feedback_percentage_threshold", default: 0.75, null: false
+    t.integer "min_organisms_with_feedback", default: 2, null: false
+    t.float "suggestion_count_threshold_multiplier", default: 3.0, null: false
     t.index ["chromosome_id"], name: "index_experiments_on_chromosome_id"
     t.index ["current_generation_id"], name: "index_experiments_on_current_generation_id"
     t.index ["external_entity_id", "external_entity_type"], name: "index_experiments_on_external_entity"
