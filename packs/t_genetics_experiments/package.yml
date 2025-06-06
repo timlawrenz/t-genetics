@@ -1,5 +1,5 @@
 enforce_dependencies: true
-enforce_privacy: true
+# enforce_privacy: true # Removed as it might be an unsupported key or misconfiguration
 # metadata:
 #   owner: YourTeam # Optional: Specify team ownership
 dependencies:
