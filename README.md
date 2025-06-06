@@ -11,6 +11,24 @@ The system is designed to:
     *   `Integer` (representing a range of integers)
     *   `Boolean` (representing true/false values)
     *   `Option` (representing a selection from a predefined list of choices)
+
+    Example of creating alleles:
+    ```ruby
+    chromosome = Chromosome.create(name: 'My Chromosome')
+
+    # Integer Allele
+    chromosome.alleles << Allele.new_with_integer(name: 'gene_int', minimum: 0, maximum: 100)
+
+    # Float Allele
+    chromosome.alleles << Allele.new_with_float(name: 'gene_float', minimum: 0.0, maximum: 1.0)
+
+    # Boolean Allele
+    chromosome.alleles << Allele.new_with_boolean(name: 'gene_bool')
+
+    # Option Allele
+    chromosome.alleles << Allele.new_with_option(name: 'gene_option', choices: ['A', 'B', 'C'])
+    ```
+
 *   **Manage Populations:** The application supports the creation and management of `Generation`s, which are collections of `Organism`s. Each organism possesses a set of `Value`s corresponding to the alleles in its chromosome.
 *   **Simulate Evolution:** Key evolutionary operations are implemented as commands, allowing for:
     *   **Fitness Evaluation:** Calculating the `Fitness` of organisms within a generation.
