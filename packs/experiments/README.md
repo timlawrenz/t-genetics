@@ -93,3 +93,23 @@ This command selects an organism from an experiment's current generation for a "
     4.  If the `PerformanceLog` fails to save, the command fails.
     5.  Returns the selected `organism` and the new `performance_log`.
 *   **Rollback:** If this command succeeds but a subsequent command in a chain fails, its `rollback` method will destroy the `PerformanceLog` record that was created.
+
+### `Experiments::RecordOutcome`
+
+This command records the outcome of a previously suggested organism, updating its `PerformanceLog` entry.
+
+*   **Purpose:** To store the results or performance metrics associated with an organism that was suggested by `Experiments::RequestSuggestion`.
+*   **Inputs:**
+    *   `performance_log` or `performance_log_id`: An instance of `PerformanceLog` or the ID of the `PerformanceLog` entry to update. (Required)
+    *   `fitness_input_value`: A `Float` representing a key performance indicator or fitness contribution from this suggestion. (Required)
+    *   `outcome_metrics`: An optional hash containing any additional contextual data about the outcome (will be stored as JSONB).
+*   **Outputs:**
+    *   The `performance_log` context variable will contain the updated `PerformanceLog` instance.
+*   **Process:**
+    1.  Finds the specified `PerformanceLog`. Fails if not found.
+    2.  Updates the `PerformanceLog` with:
+        *   The provided `fitness_input_value`.
+        *   The `outcome_metrics` (if provided).
+        *   Sets `outcome_recorded_at` to the current time.
+    3.  If the update fails (e.g., due to validations, though `PerformanceLog` currently has few), the command fails.
+*   **Rollback:** If this command succeeds but a subsequent command in a chain fails, its `rollback` method will attempt to revert the `fitness_input_value`, `outcome_metrics`, and `outcome_recorded_at` fields of the `PerformanceLog` to their values before this command was executed.
