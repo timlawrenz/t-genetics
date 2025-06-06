@@ -61,7 +61,14 @@ The system is designed to:
 *   **Views (`app/views`):** Standard Rails views that provide the HTML structure for the user interface.
 *   **ViewComponents (`app/components`):** Reusable UI elements (e.g., `ChromosomeComponent`, `PageheaderComponent`) used to build the views, promoting modularity and testability in the frontend layer.
 *   **Packs (`packs/`):** Domain-specific code is organized into packs.
-    *   **Experiments (`packs/experiments`):** Manages `Experiment` records, which track and configure runs of genetic algorithms. This includes the `Experiment` model itself, the `PerformanceLog` model for tracking organism performance suggestions, and commands like `Experiments::Setup` to initialize new experiments.
+    *   **Experiments (`packs/experiments`):** This pack introduces the concept of an `Experiment`, which formalizes an evolutionary run. An `Experiment` links a specific `Chromosome` to an `external_entity` (e.g., a project or task in the wider application) and manages its evolutionary lifecycle. Key aspects include:
+        *   **`Experiment` Model:** Tracks the configuration (like `population_size`), status (pending, running, completed, failed), and the `current_generation` of organisms. It also holds criteria for automated evolution, such as feedback thresholds.
+        *   **`PerformanceLog` Model:** Records each instance an `Organism` from an experiment is "suggested" for use by the `external_entity`. Later, the outcome of this suggestion (e.g., a `fitness_input_value` and other `outcome_metrics`) can be recorded on this log.
+        *   **Automated Evolution Cycle:**
+            *   `Experiments::RequestSuggestion`: Selects an organism from the experiment's current generation to be "used" (e.g., by the `external_entity`), creating a `PerformanceLog`.
+            *   `Experiments::RecordOutcome`: Updates the `PerformanceLog` with the results of using the organism, including a `fitness_input_value`.
+            *   `Experiments::EvaluateAndEvolve`: When an experiment is deemed `ripe_for_evolution?` (based on criteria like the amount of feedback received or the number of suggestions made), this command evaluates the fitness of organisms in the current generation (using their `PerformanceLog` data) and then creates a new generation of organisms.
+        *   `Experiments::Setup`: Initializes a new `Experiment` with its first generation of organisms.
 *   **Database Migrations (`db/migrate`):** Define and manage changes to the database schema over time.
 *   **Tests (`spec/`):** Automated tests to ensure code quality and correctness. This includes unit tests for models and commands, request specs for controller actions and authentication, and potentially integration specs for critical flows, as outlined in `CONVENTIONS.md`.
 
