@@ -32,6 +32,7 @@ group :development, :test do
   gem 'reek'
   gem 'timecop'
   gem 'webdrivers'
+  gem 'packwerk'
 end
 
 group :development do
