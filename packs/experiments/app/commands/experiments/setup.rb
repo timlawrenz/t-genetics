@@ -46,8 +46,8 @@ module Experiments
           external_entity: context.external_entity,
           chromosome: context.chromosome,
           current_generation: @generation,
-          configuration: context.experiment_configuration,
-          status: 'initialized' # Initial status
+          configuration: context.experiment_configuration
+          # Status will be set to 'pending' by AASM's initial state
         )
         unless @experiment.save
           fail_command!(errors: @experiment.errors)

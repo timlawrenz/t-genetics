@@ -10,7 +10,11 @@ The `Experiment` model is central to this pack. It encapsulates the setup and st
 
 *   `chromosome_id`: A foreign key linking the experiment to a `Chromosome`. This defines the genetic structure being evolved.
 *   `external_entity_id` & `external_entity_type`: A polymorphic association allowing an experiment to be linked to an external record in the system (e.g., a specific project, a user request, etc.). This provides context for why the experiment is being run.
-*   `status`: A string field to track the current state of the experiment (e.g., "pending", "running", "completed", "failed").
+*   `status`: A string field managed by AASM to track the current state of the experiment. Possible states are:
+    *   `pending`: The initial state when an experiment is created.
+    *   `running`: The experiment is actively in progress.
+    *   `completed`: The experiment has finished successfully.
+    *   `failed`: The experiment has finished due to an error or failure condition.
 *   `current_generation_id`: A foreign key linking to the most recent `Generation` produced within this experiment. This allows tracking the progress of the evolutionary process.
 *   `configuration`: A JSONB field to store various settings and parameters for the experiment. This could include:
     *   Population size
@@ -71,7 +75,7 @@ This command initializes a new experiment.
     1.  Validates that the provided `chromosome` is a persisted `Chromosome` record.
     2.  Creates an initial `Generation` (iteration 0) associated with the `chromosome`.
     3.  Populates this initial `Generation` with a number of `Organism`s (defaulting to 10, or as specified in `experiment_configuration[:population_size]`). Each `Organism` is created using `Organisms::Create`, which initializes its genetic `Value`s randomly based on the `Allele` definitions in the `chromosome`.
-    4.  Creates an `Experiment` record, linking it to the `external_entity`, `chromosome`, the new `current_generation`, and storing any `experiment_configuration`. The initial status is set to "initialized".
+    4.  Creates an `Experiment` record, linking it to the `external_entity`, `chromosome`, the new `current_generation`, and storing any `experiment_configuration`. The `status` is automatically set to `pending` by AASM.
 *   **Rollback:** If any step in the creation process fails (e.g., database save error), the entire operation is rolled back, ensuring no partial experiment setup is left behind. If this command is part of a larger chain of commands and a subsequent command fails, the `rollback` method of `Experiments::Setup` will destroy the created `Experiment` and its initial `Generation` (and associated `Organism`s via `dependent: :destroy` if configured). The input `Chromosome` is not affected by the rollback.
 
 ### `Experiments::RequestSuggestion`
