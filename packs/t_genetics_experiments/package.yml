@@ -1,0 +1,6 @@
+enforce_dependency: true
+enforce_privacy: true
+# metadata:
+#   owner: YourTeam # Optional: Specify team ownership
+dependencies:
+  - . # Depends on the root package where core models/commands are assumed to be.
