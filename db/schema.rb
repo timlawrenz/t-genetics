@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_06_103015) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_06_110000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -109,6 +109,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_06_103015) do
     t.index ["generation_id"], name: "index_organisms_on_generation_id"
   end
 
+  create_table "performance_logs", force: :cascade do |t|
+    t.bigint "experiment_id", null: false
+    t.bigint "organism_id", null: false
+    t.datetime "suggested_at", null: false
+    t.datetime "outcome_recorded_at"
+    t.jsonb "outcome_metrics"
+    t.float "fitness_input_value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["experiment_id"], name: "index_performance_logs_on_experiment_id"
+    t.index ["organism_id"], name: "index_performance_logs_on_organism_id"
+  end
+
   create_table "relationships", force: :cascade do |t|
     t.bigint "parent_id", null: false
     t.bigint "child_id", null: false
@@ -134,6 +147,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_06_103015) do
   add_foreign_key "experiments", "generations", column: "current_generation_id"
   add_foreign_key "generations", "chromosomes"
   add_foreign_key "organisms", "generations"
+  add_foreign_key "performance_logs", "experiments"
+  add_foreign_key "performance_logs", "organisms"
   add_foreign_key "relationships", "chromosomes", column: "child_id"
   add_foreign_key "relationships", "chromosomes", column: "parent_id"
   add_foreign_key "values", "alleles"
