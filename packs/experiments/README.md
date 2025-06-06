@@ -16,13 +16,12 @@ The `Experiment` model is central to this pack. It encapsulates the setup and st
     *   `completed`: The experiment has finished successfully.
     *   `failed`: The experiment has finished due to an error or failure condition.
 *   `current_generation_id`: A foreign key linking to the most recent `Generation` produced within this experiment. This allows tracking the progress of the evolutionary process.
-*   `configuration`: A JSONB field to store various settings and parameters for the experiment. This could include:
-    *   Population size
-    *   Mutation rates
-    *   Crossover strategies
-    *   Selection mechanisms
-    *   Termination conditions
-    *   Any other parameters relevant to the specific genetic algorithm setup.
+*   `configuration`: A JSONB field to store various settings and parameters for the experiment, such as:
+    *   `population_size`: The target number of organisms per generation.
+    *   Mutation rates, crossover strategies, selection mechanisms, termination conditions, etc.
+*   `feedback_percentage_threshold`: (Float, default: 0.75, null: false) Minimum percentage of organisms in the current generation that must have recorded outcome and fitness for one ripeness condition.
+*   `min_organisms_with_feedback`: (Integer, default: 2, null: false) Absolute minimum number of organisms that must have recorded feedback for the above condition.
+*   `suggestion_count_threshold_multiplier`: (Float, default: 3.0, null: false) If total suggestions made from the current generation exceed `population_size * multiplier`, the experiment may be considered ripe.
 *   `created_at` & `updated_at`: Standard Rails timestamps.
 
 ### Purpose and Usage:
@@ -141,3 +140,19 @@ This command evaluates the fitness of organisms in an experiment's current gener
     *   Revert the `experiment.current_generation` to the generation that was current before this command ran.
     *   Destroy the newly created (offspring) generation and its organisms.
     *   Attempt to revert the `fitness` values of the organisms in the previous generation to what they were before this command's evaluation step.
+
+## Identifying Ripeness for Evolution
+
+The `Experiment` model provides a method `ripe_for_evolution?` to help determine if an experiment might be ready for the `EvaluateAndEvolve` command, particularly in automated scenarios.
+
+### `Experiment#ripe_for_evolution?`
+
+*   **Purpose:** Checks if the current state of the experiment meets certain criteria suggesting it's a good time to evolve to the next generation. These criteria are based on direct attributes of the `Experiment` model.
+*   **Returns:** `Boolean` (`true` if ripe, `false` otherwise).
+*   **Conditions for Ripeness (returns `true` if experiment is `running?` AND any of the following are met):**
+    1.  **Feedback Saturation:**
+        *   The percentage of organisms in the `current_generation` that have at least one `PerformanceLog` with `outcome_recorded_at` and `fitness_input_value` set meets or exceeds the `experiment.feedback_percentage_threshold`.
+        *   AND the absolute number of organisms with such feedback meets or exceeds `experiment.min_organisms_with_feedback`.
+    2.  **Suggestion Volume:**
+        *   The total number of `PerformanceLog` entries (suggestions) made for organisms in the `current_generation` exceeds a threshold, provided this threshold is greater than zero. This threshold is calculated as `experiment.configuration['population_size'].to_i * experiment.suggestion_count_threshold_multiplier`.
+*   **Note:** The method returns `false` if the experiment is not in the `running` state, has no `current_generation`, or the `current_generation` has no organisms. The `population_size` for the suggestion volume calculation is read from the `configuration` hash. The direct attributes `feedback_percentage_threshold`, `min_organisms_with_feedback`, and `suggestion_count_threshold_multiplier` have database-level defaults.
