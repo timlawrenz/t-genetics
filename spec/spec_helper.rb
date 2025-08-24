@@ -3,9 +3,12 @@
 require 'simplecov'
 require 'database_cleaner'
 require 'n_plus_one_control/rspec'
-SimpleCov.add_filter 'config/initializers'
-SimpleCov.add_filter 'spec'
-SimpleCov.start
+
+# Configure SimpleCov
+SimpleCov.start do
+  add_filter 'config/initializers'
+  add_filter 'spec'
+end
 
 RSpec.configure do |config|
   config.before(:suite) do
