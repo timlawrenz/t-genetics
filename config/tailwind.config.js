@@ -17,5 +17,8 @@ module.exports = {
     require('@tailwindcss/aspect-ratio'),
     require('@tailwindcss/typography'),
     require('@tailwindcss/container-queries'),
-  ]
+  ],
+  corePlugins: {
+    preflight: false,
+  }
 }
