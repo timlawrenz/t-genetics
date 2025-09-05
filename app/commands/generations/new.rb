@@ -9,8 +9,7 @@ module Generations
     def call
       set_defaults
       while offspring_generation.organisms.count < organism_count
-        children = Organisms::Procreate.call(parents:).children
-        children.each { |child| child.update(generation: offspring_generation) }
+        children = Organisms::Procreate.call!(target_generation: offspring_generation, parents:).children
       end
     end
 

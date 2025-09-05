@@ -9,7 +9,7 @@ module Organisms
     def call
       errors.add(:parents, 'must be an array of two parents') unless parents.size == 2
 
-      context.children = parents.map { |parent| parent.dolly_clone(target_generation: context.target_generation) }
+      context.children = context.parents.map { |parent| Organisms::Clone.call!(organism: parent, target_generation:).dolly_clone }
       Organisms::Crossover.call!(organisms: context.children)
       context.children.map(&:mutate!)
     end

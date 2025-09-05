@@ -15,9 +15,6 @@ module Organisms
       end
       context.dolly_clone = create_result.organism
 
-      # 2. Copy direct attributes from the original organism to the clone
-      context.dolly_clone.fitness = context.organism.fitness
-
       # 3. Save the clone to persist attributes like fitness.
       #    save! will raise an error if validations fail, which GLCommand handles.
       context.dolly_clone.save!
