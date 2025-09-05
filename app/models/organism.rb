@@ -15,8 +15,8 @@ class Organism < ApplicationRecord
     Organisms::SetValue.call(organism: self, name:, value:)
   end
 
-  def dolly_clone
-    Organisms::Clone.call(organism: self).clone
+  def dolly_clone(target_generation:)
+    Organisms::Clone.call(organism: self, target_generation:).clone
   end
 
   def to_hsh
