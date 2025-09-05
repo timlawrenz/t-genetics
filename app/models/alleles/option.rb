@@ -12,5 +12,11 @@ module Alleles
     def to_s
       "choices: #{choices}"
     end
+
+    def to_hsh
+      {
+        choices:
+      }
+    end
   end
 end

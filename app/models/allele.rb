@@ -41,4 +41,13 @@ class Allele < ApplicationRecord
   def to_s
     "#{name}: [#{inheritable}]"
   end
+
+  def to_hsh
+    {
+      id:,
+      chromosome_id:,
+      name:,
+      type:
+    }.merge(inheritable.to_hsh)
+  end
 end

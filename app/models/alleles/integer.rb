@@ -9,5 +9,12 @@ module Alleles
     def to_s
       "minimum: #{minimum}, maximum: #{maximum}"
     end
+
+    def to_hsh
+      {
+        minimum: minimum,
+        maximum: maximum
+      }
+    end
   end
 end
