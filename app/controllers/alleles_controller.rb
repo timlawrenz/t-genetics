@@ -5,44 +5,41 @@ class AllelesController < ApplicationController
 
   # GET /alleles
   def index
-    @alleles = Allele.all
+    alleles = Allele.all
+    fresh_when(alleles)
+    render json: Allele.all.map(&:to_hsh)
   end
 
   # GET /alleles/1
-  def show; end
-
-  # GET /alleles/new
-  def new
-    @allele = Allele.new
+  def show
+    fresh_when(@allele)
+    render json: @allele.to_hsh
   end
-
-  # GET /alleles/1/edit
-  def edit; end
 
   # POST /alleles
   def create
     @allele = Allele.new(allele_params)
 
     if @allele.save
-      redirect_to @allele, notice: 'Allele was successfully created.'
+      render json: @allele.to_hsh, status: :created
     else
-      render :new, status: :unprocessable_entity
+      render json: { errors: @allele.errors }, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /alleles/1
   def update
     if @allele.update(allele_params)
-      redirect_to @allele, notice: 'Allele was successfully updated.', status: :see_other
+      render json: @allele.to_hsh, status: :ok
     else
-      render :edit, status: :unprocessable_entity
+      render json: { errors: @allele.errors }, status: :unprocessable_entity
     end
   end
 
   # DELETE /alleles/1
   def destroy
     @allele.destroy!
-    redirect_to alleles_url, notice: 'Allele was successfully destroyed.', status: :see_other
+      render json: @allele.to_hsh, status: :ok
   end
 
   private
