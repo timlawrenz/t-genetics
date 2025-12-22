@@ -22,6 +22,6 @@ class Organism < ApplicationRecord
   def to_hsh
     values.reload.includes(:allele).sort_by(&:name).each_with_object({}) do |value, result|
       result[value.allele.name.to_sym] = value.data
-    end.merge(id:, fitness:)
+    end
   end
 end
