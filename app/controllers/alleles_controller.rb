@@ -5,51 +5,77 @@ class AllelesController < ApplicationController
 
   # GET /alleles
   def index
-    alleles = Allele.all
-    fresh_when(alleles)
-    render json: Allele.all.map(&:to_hsh)
+    @alleles = Allele.all
+    fresh_when(@alleles)
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @alleles.map(&:to_hsh) }
+    end
   end
 
   # GET /alleles/1
   def show
     fresh_when(@allele)
-    render json: @allele.to_hsh
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @allele.to_hsh }
+    end
   end
+
+  # GET /alleles/new
+  def new
+    @allele = Allele.new
+  end
+
+  # GET /alleles/1/edit
+  def edit; end
 
   # POST /alleles
   def create
     @allele = Allele.new(allele_params)
 
-    if @allele.save
-      render json: @allele.to_hsh, status: :created
-    else
-      render json: { errors: @allele.errors }, status: :unprocessable_entity
+    respond_to do |format|
+      if @allele.save
+        format.html { redirect_to @allele }
+        format.json { render json: @allele.to_hsh, status: :created }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: { errors: @allele.errors }, status: :unprocessable_entity }
+      end
     end
   end
 
   # PATCH/PUT /alleles/1
   def update
-    if @allele.update(allele_params)
-      render json: @allele.to_hsh, status: :ok
-    else
-      render json: { errors: @allele.errors }, status: :unprocessable_entity
+    respond_to do |format|
+      if @allele.update(allele_params)
+        format.html { redirect_to @allele }
+        format.json { render json: @allele.to_hsh, status: :ok }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: { errors: @allele.errors }, status: :unprocessable_entity }
+      end
     end
   end
 
   # DELETE /alleles/1
   def destroy
     @allele.destroy!
-      render json: @allele.to_hsh, status: :ok
+
+    respond_to do |format|
+      format.html { redirect_to alleles_url }
+      format.json { head :no_content }
+    end
   end
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_allele
     @allele = Allele.find(params[:id])
   end
 
-  # Only allow a list of trusted parameters through.
   def allele_params
     params.require(:allele).permit(:name, :chromosome_id, :inheritable_id, :inheritable_type)
   end
