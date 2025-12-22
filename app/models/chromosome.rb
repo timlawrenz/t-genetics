@@ -15,4 +15,12 @@ class Chromosome < ApplicationRecord
   def to_s
     "#<Chromosome id:#{id} name:#{name} alleles:[#{alleles.map(&:to_s).sort.join(', ')}]>"
   end
+
+  def to_hsh
+    {
+      id: id,
+      name: name,
+      alleles: alleles.map(&:to_hsh).sort_by { _1[:name] }
+    }
+  end
 end

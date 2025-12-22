@@ -1,0 +1,37 @@
+# frozen_string_literal: true
+
+class GenerationsController < ApplicationController
+  before_action :set_chromosome
+
+  def index
+    generations = @chromosome.generations
+    fresh_when(generations)
+    render json: generations.map(&:to_hsh)
+  end
+
+  def show
+    generation = @chromosome.generations.find(params[:id])
+    fresh_when(generation)
+    render json: generation.to_hsh
+  end
+
+  def procreate
+    parent_generation = @chromosome.generations.find(params[:id])
+    offspring_generation = Generation.create(chromosome: @chromosome)
+    Generations::New.call(parent_generation:, offspring_generation:, organism_count: 76)
+    3.times do
+      organism = Organisms::Create.call(generation: offspring_generation).organism
+      organism.mutate!(probability: 1)
+    end
+    fittest = parent_generation.organisms.order(fitness: :desc).first
+    Organisms::Clone.call(organism: fittest, generation: offspring_generation)
+
+    render json: offspring_generation.to_hsh, status: :created
+  end
+
+  private
+
+  def set_chromosome
+    @chromosome = Chromosome.find(params[:chromosome_id])
+  end
+end
