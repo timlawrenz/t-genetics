@@ -64,7 +64,7 @@ RSpec.describe '/chromosomes/:chromosome_id/alleles' do
 
       it 'returns 422' do
         post chromosome_alleles_url(chromosome), params: { allele: invalid_attributes }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
   end
@@ -84,7 +84,7 @@ RSpec.describe '/chromosomes/:chromosome_id/alleles' do
     context 'with invalid parameters' do
       it 'rejects changing type' do
         patch chromosome_allele_url(chromosome, allele), params: { allele: { type: 'Float' } }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
   end
