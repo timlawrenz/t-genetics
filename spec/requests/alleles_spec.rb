@@ -14,53 +14,29 @@ require 'rails_helper'
 # of tools you can use to make these specs even more expressive, but we're
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
-RSpec.describe '/alleles' do
-  # This should return the minimal set of attributes required to create a valid
-  # Allele. As you add validations to Allele, be sure to
-  # adjust the attributes here as well.
+RSpec.describe '/chromosomes/:chromosome_id/alleles' do
+  let(:chromosome) { FactoryBot.create(:chromosome) }
+
   let(:valid_attributes) do
-    { name: 'foobaz',
-      inheritable_id: Alleles::Float.first.id,
-      inheritable_type: 'Alleles::Float',
-      chromosome_id: Chromosome.first.id }
+    { name: 'legs', type: 'Integer', minimum: 1, maximum: 50 }
   end
 
   let(:invalid_attributes) do
-    { name: nil, inheritable: nil, chromosome: nil }
-  end
-
-  before do
-    FactoryBot.create(:chromosome)
-    FactoryBot.create(:'Alleles::Float')
+    { name: 'legs', type: 'Integer' }
   end
 
   describe 'GET /index' do
     it 'renders a successful response' do
-      Allele.create! valid_attributes
-      get alleles_url
+      chromosome.alleles << Allele.new_with_integer(name: 'legs', minimum: 1, maximum: 50)
+      get chromosome_alleles_url(chromosome)
       expect(response).to be_successful
     end
   end
 
   describe 'GET /show' do
     it 'renders a successful response' do
-      allele = Allele.create! valid_attributes
-      get allele_url(allele)
-      expect(response).to be_successful
-    end
-  end
-
-  describe 'GET /new' do
-    it 'renders a successful response' do
-      get new_allele_url
-      expect(response).to be_successful
-    end
-  end
-
-  describe 'GET /edit' do
-    it 'renders a successful response' do
-      allele = Allele.create! valid_attributes
-      get edit_allele_url(allele)
+      allele = (chromosome.alleles << Allele.new_with_integer(name: 'legs', minimum: 1, maximum: 50)).last
+      get chromosome_allele_url(chromosome, allele)
       expect(response).to be_successful
     end
   end
@@ -69,58 +45,45 @@ RSpec.describe '/alleles' do
     context 'with valid parameters' do
       it 'creates a new Allele' do
         expect do
-          post alleles_url, params: { allele: valid_attributes }
+          post chromosome_alleles_url(chromosome), params: { allele: valid_attributes }
         end.to change(Allele, :count).by(1)
       end
 
-      it 'redirects to the created allele' do
-        post alleles_url, params: { allele: valid_attributes }
-        expect(response).to redirect_to(allele_url(Allele.last))
+      it 'returns a 201 response' do
+        post chromosome_alleles_url(chromosome), params: { allele: valid_attributes }
+        expect(response).to have_http_status(:created)
       end
     end
 
     context 'with invalid parameters' do
       it 'does not create a new Allele' do
         expect do
-          post alleles_url, params: { allele: invalid_attributes }
+          post chromosome_alleles_url(chromosome), params: { allele: invalid_attributes }
         end.not_to change(Allele, :count)
       end
 
-      it "renders a response with 422 status (i.e. to display the 'new' template)" do
-        post alleles_url, params: { allele: invalid_attributes }
+      it 'returns 422' do
+        post chromosome_alleles_url(chromosome), params: { allele: invalid_attributes }
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
   end
 
   describe 'PATCH /update' do
+    let(:allele) { (chromosome.alleles << Allele.new_with_integer(name: 'legs', minimum: 1, maximum: 50)).last }
+
     context 'with valid parameters' do
-      let(:new_attributes) do
-        { name: 'baz',
-          inheritable_id: Alleles::Float.first.id,
-          inheritable_type: 'Alleles::Float',
-          chromosome_id: Chromosome.first.id }
-      end
-
       it 'updates the requested allele' do
-        allele = Allele.create! valid_attributes
-        patch allele_url(allele), params: { allele: new_attributes }
-        allele.reload
-        expect(allele.name).to eq('baz')
-      end
-
-      it 'redirects to the allele' do
-        allele = Allele.create! valid_attributes
-        patch allele_url(allele), params: { allele: new_attributes }
-        allele.reload
-        expect(response).to redirect_to(allele_url(allele))
+        patch chromosome_allele_url(chromosome, allele), params: { allele: { minimum: 2, maximum: 60 } }
+        expect(response).to have_http_status(:ok)
+        expect(allele.reload.inheritable.minimum).to eq(2)
+        expect(allele.reload.inheritable.maximum).to eq(60)
       end
     end
 
     context 'with invalid parameters' do
-      it "renders a response with 422 status (i.e. to display the 'edit' template)" do
-        allele = Allele.create! valid_attributes
-        patch allele_url(allele), params: { allele: invalid_attributes }
+      it 'rejects changing type' do
+        patch chromosome_allele_url(chromosome, allele), params: { allele: { type: 'Float' } }
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
@@ -128,16 +91,16 @@ RSpec.describe '/alleles' do
 
   describe 'DELETE /destroy' do
     it 'destroys the requested allele' do
-      allele = Allele.create! valid_attributes
+      allele = (chromosome.alleles << Allele.new_with_integer(name: 'legs', minimum: 1, maximum: 50)).last
       expect do
-        delete allele_url(allele)
+        delete chromosome_allele_url(chromosome, allele)
       end.to change(Allele, :count).by(-1)
     end
 
-    it 'redirects to the alleles list' do
-      allele = Allele.create! valid_attributes
-      delete allele_url(allele)
-      expect(response).to redirect_to(alleles_url)
+    it 'returns 204' do
+      allele = (chromosome.alleles << Allele.new_with_integer(name: 'legs', minimum: 1, maximum: 50)).last
+      delete chromosome_allele_url(chromosome, allele)
+      expect(response).to have_http_status(:no_content)
     end
   end
 end

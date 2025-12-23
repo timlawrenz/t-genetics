@@ -1,0 +1,549 @@
+---
+openapi: 3.0.1
+info:
+  title: TGenetics API
+  version: v1
+paths:
+  "/chromosomes":
+    get:
+      summary: List chromosomes
+      tags:
+      - Chromosomes
+      responses:
+        '200':
+          description: chromosomes listed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Chromosome"
+    post:
+      summary: Create chromosome
+      tags:
+      - Chromosomes
+      parameters: []
+      responses:
+        '201':
+          description: chromosome created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Chromosome"
+        '422':
+          description: invalid request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Errors"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - chromosome
+              properties:
+                chromosome:
+                  type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      type: string
+  "/chromosomes/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: Show chromosome
+      tags:
+      - Chromosomes
+      responses:
+        '200':
+          description: chromosome found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Chromosome"
+        '404':
+          description: not found
+    patch:
+      summary: Update chromosome
+      tags:
+      - Chromosomes
+      parameters: []
+      responses:
+        '200':
+          description: chromosome updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Chromosome"
+        '422':
+          description: invalid request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Errors"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - chromosome
+              properties:
+                chromosome:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+    delete:
+      summary: Delete chromosome
+      tags:
+      - Chromosomes
+      responses:
+        '204':
+          description: chromosome deleted
+  "/chromosomes/{chromosome_id}/alleles":
+    parameters:
+    - name: chromosome_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: List alleles
+      tags:
+      - Alleles
+      responses:
+        '200':
+          description: alleles listed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Allele"
+    post:
+      summary: Create allele
+      tags:
+      - Alleles
+      parameters: []
+      description: |
+        Creates an allele within the chromosome using a typed request body.
+
+        Supported `type` values:
+        - `Integer` (requires `minimum` + `maximum`)
+        - `Float` (requires `minimum` + `maximum`)
+        - `Boolean` (no additional fields)
+        - `Option` (requires `choices`)
+      responses:
+        '201':
+          description: allele created
+          content:
+            application/json:
+              examples:
+                integer:
+                  value:
+                    id: 1
+                    chromosome_id: 1
+                    name: legs
+                    type: Integer
+                    minimum: 1
+                    maximum: 50
+                float:
+                  value:
+                    id: 2
+                    chromosome_id: 1
+                    name: height
+                    type: Float
+                    minimum: 1.0
+                    maximum: 10.0
+                boolean:
+                  value:
+                    id: 3
+                    chromosome_id: 1
+                    name: flies
+                    type: Boolean
+                option:
+                  value:
+                    id: 4
+                    chromosome_id: 1
+                    name: color
+                    type: Option
+                    choices:
+                    - green
+                    - blue
+              schema:
+                "$ref": "#/components/schemas/Allele"
+        '422':
+          description: invalid request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Errors"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - allele
+              properties:
+                allele:
+                  type: object
+                  required:
+                  - name
+                  - type
+                  properties:
+                    name:
+                      type: string
+                    type:
+                      type: string
+                      description: One of Integer|Float|Boolean|Option
+                    minimum:
+                      type: number
+                      nullable: true
+                    maximum:
+                      type: number
+                      nullable: true
+                    choices:
+                      type: array
+                      items:
+                        type: string
+                      nullable: true
+            examples:
+              integer:
+                summary: Integer allele
+                value:
+                  allele:
+                    name: legs
+                    type: Integer
+                    minimum: 1
+                    maximum: 50
+              float:
+                summary: Float allele
+                value:
+                  allele:
+                    name: height
+                    type: Float
+                    minimum: 1.0
+                    maximum: 10.0
+              boolean:
+                summary: Boolean allele
+                value:
+                  allele:
+                    name: flies
+                    type: Boolean
+              option:
+                summary: Option allele
+                value:
+                  allele:
+                    name: color
+                    type: Option
+                    choices:
+                    - green
+                    - blue
+  "/chromosomes/{chromosome_id}/alleles/{id}":
+    parameters:
+    - name: chromosome_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: Show allele
+      tags:
+      - Alleles
+      responses:
+        '200':
+          description: allele found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Allele"
+        '404':
+          description: not found
+    patch:
+      summary: Update allele
+      tags:
+      - Alleles
+      parameters: []
+      responses:
+        '200':
+          description: allele updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Allele"
+        '422':
+          description: type cannot be changed
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Errors"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - allele
+              properties:
+                allele:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    type:
+                      type: string
+                    minimum:
+                      type: number
+                      nullable: true
+                    maximum:
+                      type: number
+                      nullable: true
+                    choices:
+                      type: array
+                      items:
+                        type: string
+                      nullable: true
+    delete:
+      summary: Delete allele
+      tags:
+      - Alleles
+      responses:
+        '204':
+          description: allele deleted
+  "/chromosomes/{chromosome_id}/generations":
+    parameters:
+    - name: chromosome_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: List generations
+      tags:
+      - Generations
+      responses:
+        '200':
+          description: generations listed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Generation"
+  "/chromosomes/{chromosome_id}/generations/{id}":
+    parameters:
+    - name: chromosome_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: Show generation
+      tags:
+      - Generations
+      responses:
+        '200':
+          description: generation found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Generation"
+  "/chromosomes/{chromosome_id}/generations/{id}/procreate":
+    parameters:
+    - name: chromosome_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    post:
+      summary: Procreate a new generation
+      tags:
+      - Generations
+      responses:
+        '201':
+          description: offspring generation created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Generation"
+  "/chromosomes/{chromosome_id}/generations/{generation_id}/organisms":
+    parameters:
+    - name: chromosome_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    - name: generation_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: List organisms
+      tags:
+      - Organisms
+      responses:
+        '200':
+          description: organisms listed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Organism"
+  "/chromosomes/{chromosome_id}/generations/{generation_id}/organisms/{id}":
+    parameters:
+    - name: chromosome_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    - name: generation_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: Show organism
+      tags:
+      - Organisms
+      responses:
+        '200':
+          description: organism found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Organism"
+    patch:
+      summary: Update organism fitness
+      tags:
+      - Organisms
+      parameters: []
+      responses:
+        '200':
+          description: organism updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Organism"
+        '400':
+          description: missing organism param
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - organism
+              properties:
+                organism:
+                  type: object
+                  properties:
+                    fitness:
+                      type: number
+components:
+  schemas:
+    Chromosome:
+      type: object
+      required:
+      - id
+      - name
+      - alleles
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        alleles:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Allele"
+    Allele:
+      type: object
+      required:
+      - id
+      - chromosome_id
+      - name
+      - type
+      properties:
+        id:
+          type: integer
+        chromosome_id:
+          type: integer
+        name:
+          type: string
+        type:
+          type: string
+        minimum:
+          type: number
+          nullable: true
+        maximum:
+          type: number
+          nullable: true
+        choices:
+          type: array
+          items:
+            type: string
+          nullable: true
+    Generation:
+      type: object
+      required:
+      - id
+      - chromosome_id
+      properties:
+        id:
+          type: integer
+        chromosome_id:
+          type: integer
+    Organism:
+      type: object
+      additionalProperties:
+        oneOf:
+        - type: string
+        - type: number
+        - type: boolean
+        - type: 'null'
+    Errors:
+      type: object
+      properties:
+        errors:
+          oneOf:
+          - type: array
+            items:
+              type: string
+          - type: object
+servers:
+- url: http://{defaultHost}
+  variables:
+    defaultHost:
+      default: localhost:3001

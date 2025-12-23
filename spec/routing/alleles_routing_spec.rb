@@ -2,38 +2,30 @@
 
 require 'rails_helper'
 
-RSpec.describe AllelesController do
+RSpec.describe Chromosomes::AllelesController do
   describe 'routing' do
-    it 'routes to #index' do
-      expect(get: '/alleles').to route_to('alleles#index')
+    it 'does not expose top-level alleles' do
+      expect(get: '/alleles').not_to be_routable
     end
 
-    it 'routes to #new' do
-      expect(get: '/alleles/new').to route_to('alleles#new')
+    it 'routes to #index' do
+      expect(get: '/chromosomes/1/alleles').to route_to('chromosomes/alleles#index', chromosome_id: '1')
     end
 
     it 'routes to #show' do
-      expect(get: '/alleles/1').to route_to('alleles#show', id: '1')
-    end
-
-    it 'routes to #edit' do
-      expect(get: '/alleles/1/edit').to route_to('alleles#edit', id: '1')
+      expect(get: '/chromosomes/1/alleles/2').to route_to('chromosomes/alleles#show', chromosome_id: '1', id: '2')
     end
 
     it 'routes to #create' do
-      expect(post: '/alleles').to route_to('alleles#create')
-    end
-
-    it 'routes to #update via PUT' do
-      expect(put: '/alleles/1').to route_to('alleles#update', id: '1')
+      expect(post: '/chromosomes/1/alleles').to route_to('chromosomes/alleles#create', chromosome_id: '1')
     end
 
     it 'routes to #update via PATCH' do
-      expect(patch: '/alleles/1').to route_to('alleles#update', id: '1')
+      expect(patch: '/chromosomes/1/alleles/2').to route_to('chromosomes/alleles#update', chromosome_id: '1', id: '2')
     end
 
     it 'routes to #destroy' do
-      expect(delete: '/alleles/1').to route_to('alleles#destroy', id: '1')
+      expect(delete: '/chromosomes/1/alleles/2').to route_to('chromosomes/alleles#destroy', chromosome_id: '1', id: '2')
     end
   end
 end

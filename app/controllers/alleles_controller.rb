@@ -1,56 +1,33 @@
 # frozen_string_literal: true
 
+# NOTE: Alleles are now managed within a chromosome scope.
+# This controller is intentionally kept as a thin shim for legacy HTML usage.
 class AllelesController < ApplicationController
-  before_action :set_allele, only: %i[show edit update destroy]
-
-  # GET /alleles
   def index
-    alleles = Allele.all
-    fresh_when(alleles)
-    render json: Allele.all.map(&:to_hsh)
+    head :not_found
   end
 
-  # GET /alleles/1
   def show
-    fresh_when(@allele)
-    render json: @allele.to_hsh
+    head :not_found
   end
 
-  # POST /alleles
+  def new
+    head :not_found
+  end
+
+  def edit
+    head :not_found
+  end
+
   def create
-    @allele = Allele.new(allele_params)
-
-    if @allele.save
-      render json: @allele.to_hsh, status: :created
-    else
-      render json: { errors: @allele.errors }, status: :unprocessable_entity
-    end
+    head :not_found
   end
 
-  # PATCH/PUT /alleles/1
   def update
-    if @allele.update(allele_params)
-      render json: @allele.to_hsh, status: :ok
-    else
-      render json: { errors: @allele.errors }, status: :unprocessable_entity
-    end
+    head :not_found
   end
 
-  # DELETE /alleles/1
   def destroy
-    @allele.destroy!
-      render json: @allele.to_hsh, status: :ok
-  end
-
-  private
-
-  # Use callbacks to share common setup or constraints between actions.
-  def set_allele
-    @allele = Allele.find(params[:id])
-  end
-
-  # Only allow a list of trusted parameters through.
-  def allele_params
-    params.require(:allele).permit(:name, :chromosome_id, :inheritable_id, :inheritable_type)
+    head :not_found
   end
 end

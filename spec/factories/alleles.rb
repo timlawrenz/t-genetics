@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :allele do
-    name { 'MyString' }
+    name { 'Name' }
     chromosome
     inheritable { Alleles::Float.create }
   end

@@ -1,0 +1,15 @@
+<%= form_with(model: allele, local: true) do |form| %>
+  <div>
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div>
+    <%= form.label :chromosome_id %>
+    <%= form.number_field :chromosome_id %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

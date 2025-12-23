@@ -52,6 +52,14 @@ The system is designed to:
 *   Database initialization: `rails db:schema:load` (or `rails db:setup` which includes seeds)
 *   How to run the test suite: `bundle exec rspec`
 
+### API Documentation (OpenAPI / Swagger)
+- Swagger UI: `http://localhost:3001/api-docs` (development/test only)
+- Generated OpenAPI artifact (committed): `swagger/v1/swagger.yaml`
+- Regenerate the artifact:
+  - `bundle exec rake rswag:specs:swaggerize`
+- Verify the committed artifact is up to date (CI-friendly):
+  - `bundle exec rake rswag:verify`
+
 ## Key Components
 
 *   **Models (`app/models`):** Define the core data structures like `Chromosome`, `Allele`, `Generation`, `Organism`, and `Value`. Different allele types (`Alleles::Float`, `Alleles::Integer`, etc.) and their corresponding value types (`Values::Float`, `Values::Integer`, etc.) are implemented using polymorphic associations with specific backing tables.
