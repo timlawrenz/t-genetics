@@ -7,6 +7,12 @@ RSpec.describe 'TGenetics API', openapi_spec: 'v1/swagger.yaml', type: :request 
     get 'List chromosomes' do
       tags 'Chromosomes'
       produces 'application/json'
+      description <<~MD
+        Lists chromosomes (the top-level "genome template").
+
+        A chromosome contains alleles (parameters) and generations (population snapshots).
+        Typical workflow: create chromosome → add alleles → create first generation → update fitness → procreate.
+      MD
 
       response '200', 'chromosomes listed' do
         schema type: :array, items: { '$ref' => '#/components/schemas/Chromosome' }
@@ -21,6 +27,11 @@ RSpec.describe 'TGenetics API', openapi_spec: 'v1/swagger.yaml', type: :request 
       tags 'Chromosomes'
       consumes 'application/json'
       produces 'application/json'
+      description <<~MD
+        Creates a new chromosome container.
+
+        After creating the chromosome, you typically create alleles under it and then bootstrap the first generation.
+      MD
       parameter name: :chromosome, in: :body, schema: {
         type: :object,
         required: [:chromosome],
@@ -57,6 +68,11 @@ RSpec.describe 'TGenetics API', openapi_spec: 'v1/swagger.yaml', type: :request 
     get 'Show chromosome' do
       tags 'Chromosomes'
       produces 'application/json'
+      description <<~MD
+        Fetches a single chromosome, including its allele definitions.
+
+        Use this to discover the parameter space (alleles) before creating organisms and setting fitness.
+      MD
 
       response '200', 'chromosome found' do
         schema '$ref' => '#/components/schemas/Chromosome'
@@ -76,6 +92,11 @@ RSpec.describe 'TGenetics API', openapi_spec: 'v1/swagger.yaml', type: :request 
       tags 'Chromosomes'
       consumes 'application/json'
       produces 'application/json'
+      description <<~MD
+        Updates chromosome metadata.
+
+        This does not modify existing generations/organisms; it only updates the chromosome record (currently: name).
+      MD
       parameter name: :chromosome, in: :body, schema: {
         type: :object,
         required: [:chromosome],
@@ -111,6 +132,11 @@ RSpec.describe 'TGenetics API', openapi_spec: 'v1/swagger.yaml', type: :request 
     delete 'Delete chromosome' do
       tags 'Chromosomes'
       produces 'application/json'
+      description <<~MD
+        Deletes a chromosome and all nested resources (alleles, generations, organisms).
+
+        Use with care: this is a destructive reset of the entire experiment.
+      MD
 
       response '204', 'chromosome deleted' do
         let(:id) { Chromosome.create!(name: 'experiment 1').id }
@@ -126,6 +152,11 @@ RSpec.describe 'TGenetics API', openapi_spec: 'v1/swagger.yaml', type: :request 
     get 'List alleles' do
       tags 'Alleles'
       produces 'application/json'
+      description <<~MD
+        Lists all alleles for a chromosome.
+
+        Alleles define the "search space" (parameters) that each organism will carry values for.
+      MD
 
       response '200', 'alleles listed' do
         schema type: :array, items: { '$ref' => '#/components/schemas/Allele' }
@@ -247,6 +278,11 @@ RSpec.describe 'TGenetics API', openapi_spec: 'v1/swagger.yaml', type: :request 
     get 'Show allele' do
       tags 'Alleles'
       produces 'application/json'
+      description <<~MD
+        Fetches a single allele definition within a chromosome.
+
+        Useful for inspecting constraints (e.g., min/max or option choices) before creating/updating organisms.
+      MD
 
       response '200', 'allele found' do
         schema '$ref' => '#/components/schemas/Allele'
@@ -271,6 +307,13 @@ RSpec.describe 'TGenetics API', openapi_spec: 'v1/swagger.yaml', type: :request 
       tags 'Alleles'
       consumes 'application/json'
       produces 'application/json'
+      description <<~MD
+        Updates an existing allele.
+
+        Rules:
+        - You may change the allele name and constraints within its current type.
+        - You may NOT change the allele type (e.g., Integer → Float).
+      MD
       parameter name: :allele, in: :body, schema: {
         type: :object,
         required: [:allele],
@@ -321,6 +364,11 @@ RSpec.describe 'TGenetics API', openapi_spec: 'v1/swagger.yaml', type: :request 
     delete 'Delete allele' do
       tags 'Alleles'
       produces 'application/json'
+      description <<~MD
+        Deletes an allele from a chromosome.
+
+        Note: existing organism values for this allele (in existing generations) may become incomplete.
+      MD
 
       response '204', 'allele deleted' do
         let(:chromosome) { Chromosome.create!(name: 'experiment 1') }
@@ -339,6 +387,12 @@ RSpec.describe 'TGenetics API', openapi_spec: 'v1/swagger.yaml', type: :request 
     get 'List generations' do
       tags 'Generations'
       produces 'application/json'
+      description <<~MD
+        Lists generations for a chromosome.
+
+        A generation is a snapshot/iteration of a population of organisms.
+        Use `POST /chromosomes/{chromosome_id}/generations` to create the first generation, then `procreate` to create subsequent generations.
+      MD
 
       response '200', 'generations listed' do
         schema type: :array, items: { '$ref' => '#/components/schemas/Generation' }
@@ -356,6 +410,15 @@ RSpec.describe 'TGenetics API', openapi_spec: 'v1/swagger.yaml', type: :request 
     post 'Create first generation' do
       tags 'Generations'
       produces 'application/json'
+      description <<~MD
+        Bootstraps the first generation for a chromosome.
+
+        Behavior:
+        - Allowed only if the chromosome has zero generations.
+        - Creates `iteration = 1` and seeds an initial population of organisms (currently 20).
+
+        If a generation already exists, you should use `procreate` from an existing generation instead of creating multiple "generation 1" roots.
+      MD
 
       response '201', 'generation created' do
         schema '$ref' => '#/components/schemas/Generation'
@@ -388,6 +451,11 @@ RSpec.describe 'TGenetics API', openapi_spec: 'v1/swagger.yaml', type: :request 
     get 'Show generation' do
       tags 'Generations'
       produces 'application/json'
+      description <<~MD
+        Fetches a generation record.
+
+        Note: this endpoint returns generation metadata (id, chromosome_id). Use the organisms endpoints to inspect the population.
+      MD
 
       response '200', 'generation found' do
         schema '$ref' => '#/components/schemas/Generation'
@@ -408,6 +476,15 @@ RSpec.describe 'TGenetics API', openapi_spec: 'v1/swagger.yaml', type: :request 
     post 'Procreate a new generation' do
       tags 'Generations'
       produces 'application/json'
+      description <<~MD
+        Creates a new generation derived from a parent generation.
+
+        This is the main "evolution" step:
+        - Selects parents from the parent generation (based on fitness)
+        - Produces a new population in a newly created generation
+
+        After creating the offspring generation, update fitness values for its organisms and procreate again.
+      MD
 
       response '201', 'offspring generation created' do
         schema '$ref' => '#/components/schemas/Generation'
@@ -442,6 +519,12 @@ RSpec.describe 'TGenetics API', openapi_spec: 'v1/swagger.yaml', type: :request 
     get 'List organisms' do
       tags 'Organisms'
       produces 'application/json'
+      description <<~MD
+        Lists organisms in a generation.
+
+        An organism represents one candidate solution (one set of allele values).
+        Use `PATCH /.../organisms/{id}` to update fitness after evaluating the organism externally.
+      MD
 
       response '200', 'organisms listed' do
         schema type: :array, items: { '$ref' => '#/components/schemas/Organism' }
@@ -473,6 +556,11 @@ RSpec.describe 'TGenetics API', openapi_spec: 'v1/swagger.yaml', type: :request 
     get 'Show organism' do
       tags 'Organisms'
       produces 'application/json'
+      description <<~MD
+        Fetches a single organism's current allele values.
+
+        This is what you feed into your external evaluation (e.g., model/sampler/scheduler hyperparameters).
+      MD
 
       response '200', 'organism found' do
         schema '$ref' => '#/components/schemas/Organism'
@@ -501,6 +589,12 @@ RSpec.describe 'TGenetics API', openapi_spec: 'v1/swagger.yaml', type: :request 
       tags 'Organisms'
       consumes 'application/json'
       produces 'application/json'
+      description <<~MD
+        Updates an organism's fitness score.
+
+        Fitness is the signal used for selection when procreating the next generation.
+        Higher fitness means the organism is more likely to be selected as a parent.
+      MD
       parameter name: :organism, in: :body, schema: {
         type: :object,
         required: [:organism],

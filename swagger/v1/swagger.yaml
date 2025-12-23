@@ -9,6 +9,11 @@ paths:
       summary: List chromosomes
       tags:
       - Chromosomes
+      description: |
+        Lists chromosomes (the top-level "genome template").
+
+        A chromosome contains alleles (parameters) and generations (population snapshots).
+        Typical workflow: create chromosome → add alleles → create first generation → update fitness → procreate.
       responses:
         '200':
           description: chromosomes listed
@@ -22,6 +27,10 @@ paths:
       summary: Create chromosome
       tags:
       - Chromosomes
+      description: |
+        Creates a new chromosome container.
+
+        After creating the chromosome, you typically create alleles under it and then bootstrap the first generation.
       parameters: []
       responses:
         '201':
@@ -62,6 +71,10 @@ paths:
       summary: Show chromosome
       tags:
       - Chromosomes
+      description: |
+        Fetches a single chromosome, including its allele definitions.
+
+        Use this to discover the parameter space (alleles) before creating organisms and setting fitness.
       responses:
         '200':
           description: chromosome found
@@ -75,6 +88,10 @@ paths:
       summary: Update chromosome
       tags:
       - Chromosomes
+      description: |
+        Updates chromosome metadata.
+
+        This does not modify existing generations/organisms; it only updates the chromosome record (currently: name).
       parameters: []
       responses:
         '200':
@@ -106,6 +123,10 @@ paths:
       summary: Delete chromosome
       tags:
       - Chromosomes
+      description: |
+        Deletes a chromosome and all nested resources (alleles, generations, organisms).
+
+        Use with care: this is a destructive reset of the entire experiment.
       responses:
         '204':
           description: chromosome deleted
@@ -120,6 +141,10 @@ paths:
       summary: List alleles
       tags:
       - Alleles
+      description: |
+        Lists all alleles for a chromosome.
+
+        Alleles define the "search space" (parameters) that each organism will carry values for.
       responses:
         '200':
           description: alleles listed
@@ -265,6 +290,10 @@ paths:
       summary: Show allele
       tags:
       - Alleles
+      description: |
+        Fetches a single allele definition within a chromosome.
+
+        Useful for inspecting constraints (e.g., min/max or option choices) before creating/updating organisms.
       responses:
         '200':
           description: allele found
@@ -278,6 +307,12 @@ paths:
       summary: Update allele
       tags:
       - Alleles
+      description: |
+        Updates an existing allele.
+
+        Rules:
+        - You may change the allele name and constraints within its current type.
+        - You may NOT change the allele type (e.g., Integer → Float).
       parameters: []
       responses:
         '200':
@@ -322,6 +357,10 @@ paths:
       summary: Delete allele
       tags:
       - Alleles
+      description: |
+        Deletes an allele from a chromosome.
+
+        Note: existing organism values for this allele (in existing generations) may become incomplete.
       responses:
         '204':
           description: allele deleted
@@ -336,6 +375,11 @@ paths:
       summary: List generations
       tags:
       - Generations
+      description: |
+        Lists generations for a chromosome.
+
+        A generation is a snapshot/iteration of a population of organisms.
+        Use `POST /chromosomes/{chromosome_id}/generations` to create the first generation, then `procreate` to create subsequent generations.
       responses:
         '200':
           description: generations listed
@@ -349,6 +393,14 @@ paths:
       summary: Create first generation
       tags:
       - Generations
+      description: |
+        Bootstraps the first generation for a chromosome.
+
+        Behavior:
+        - Allowed only if the chromosome has zero generations.
+        - Creates `iteration = 1` and seeds an initial population of organisms (currently 20).
+
+        If a generation already exists, you should use `procreate` from an existing generation instead of creating multiple "generation 1" roots.
       responses:
         '201':
           description: generation created
@@ -378,6 +430,10 @@ paths:
       summary: Show generation
       tags:
       - Generations
+      description: |
+        Fetches a generation record.
+
+        Note: this endpoint returns generation metadata (id, chromosome_id). Use the organisms endpoints to inspect the population.
       responses:
         '200':
           description: generation found
@@ -401,6 +457,14 @@ paths:
       summary: Procreate a new generation
       tags:
       - Generations
+      description: |
+        Creates a new generation derived from a parent generation.
+
+        This is the main "evolution" step:
+        - Selects parents from the parent generation (based on fitness)
+        - Produces a new population in a newly created generation
+
+        After creating the offspring generation, update fitness values for its organisms and procreate again.
       responses:
         '201':
           description: offspring generation created
@@ -424,6 +488,11 @@ paths:
       summary: List organisms
       tags:
       - Organisms
+      description: |
+        Lists organisms in a generation.
+
+        An organism represents one candidate solution (one set of allele values).
+        Use `PATCH /.../organisms/{id}` to update fitness after evaluating the organism externally.
       responses:
         '200':
           description: organisms listed
@@ -454,6 +523,10 @@ paths:
       summary: Show organism
       tags:
       - Organisms
+      description: |
+        Fetches a single organism's current allele values.
+
+        This is what you feed into your external evaluation (e.g., model/sampler/scheduler hyperparameters).
       responses:
         '200':
           description: organism found
@@ -465,6 +538,11 @@ paths:
       summary: Update organism fitness
       tags:
       - Organisms
+      description: |
+        Updates an organism's fitness score.
+
+        Fitness is the signal used for selection when procreating the next generation.
+        Higher fitness means the organism is more likely to be selected as a parent.
       parameters: []
       responses:
         '200':
