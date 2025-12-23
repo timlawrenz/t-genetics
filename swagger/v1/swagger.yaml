@@ -134,11 +134,51 @@ paths:
       tags:
       - Alleles
       parameters: []
+      description: |
+        Creates an allele within the chromosome using a typed request body.
+
+        Supported `type` values:
+        - `Integer` (requires `minimum` + `maximum`)
+        - `Float` (requires `minimum` + `maximum`)
+        - `Boolean` (no additional fields)
+        - `Option` (requires `choices`)
       responses:
         '201':
-          description: option allele created
+          description: allele created
           content:
             application/json:
+              examples:
+                integer:
+                  value:
+                    id: 1
+                    chromosome_id: 1
+                    name: legs
+                    type: Integer
+                    minimum: 1
+                    maximum: 50
+                float:
+                  value:
+                    id: 2
+                    chromosome_id: 1
+                    name: height
+                    type: Float
+                    minimum: 1.0
+                    maximum: 10.0
+                boolean:
+                  value:
+                    id: 3
+                    chromosome_id: 1
+                    name: flies
+                    type: Boolean
+                option:
+                  value:
+                    id: 4
+                    chromosome_id: 1
+                    name: color
+                    type: Option
+                    choices:
+                    - green
+                    - blue
               schema:
                 "$ref": "#/components/schemas/Allele"
         '422':
@@ -177,6 +217,38 @@ paths:
                       items:
                         type: string
                       nullable: true
+            examples:
+              integer:
+                summary: Integer allele
+                value:
+                  allele:
+                    name: legs
+                    type: Integer
+                    minimum: 1
+                    maximum: 50
+              float:
+                summary: Float allele
+                value:
+                  allele:
+                    name: height
+                    type: Float
+                    minimum: 1.0
+                    maximum: 10.0
+              boolean:
+                summary: Boolean allele
+                value:
+                  allele:
+                    name: flies
+                    type: Boolean
+              option:
+                summary: Option allele
+                value:
+                  allele:
+                    name: color
+                    type: Option
+                    choices:
+                    - green
+                    - blue
   "/chromosomes/{chromosome_id}/alleles/{id}":
     parameters:
     - name: chromosome_id
