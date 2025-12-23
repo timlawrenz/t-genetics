@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   end
 
   resources :chromosomes do
+    resources :alleles, module: :chromosomes, except: %i[new edit]
+
     resources :generations do
       member do
         post 'procreate'
@@ -12,7 +14,6 @@ Rails.application.routes.draw do
       resources :organisms
     end
   end
-  resources :alleles
 
   root 'chromosomes#index'
 end

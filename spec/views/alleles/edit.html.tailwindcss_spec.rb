@@ -3,21 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'alleles/edit' do
-  let(:allele) do
-    FactoryBot.create(:allele, inheritable: Alleles::Float.create)
-  end
-
-  before do
-    assign(:allele, allele)
-  end
-
-  it 'renders the edit allele form' do
-    render
-
-    assert_select 'form[action=?][method=?]', allele_path(allele), 'post' do
-      assert_select 'input[name=?]', 'allele[name]'
-
-      assert_select 'input[name=?]', 'allele[chromosome_id]'
-    end
+  it 'is no longer rendered (alleles are managed under chromosomes)' do
+    skip 'Allele HTML forms are out of scope; alleles are now managed via nested chromosome routes'
   end
 end

@@ -109,7 +109,13 @@ paths:
       responses:
         '204':
           description: chromosome deleted
-  "/alleles":
+  "/chromosomes/{chromosome_id}/alleles":
+    parameters:
+    - name: chromosome_id
+      in: path
+      required: true
+      schema:
+        type: integer
     get:
       summary: List alleles
       tags:
@@ -130,7 +136,7 @@ paths:
       parameters: []
       responses:
         '201':
-          description: allele created
+          description: option allele created
           content:
             application/json:
               schema:
@@ -153,20 +159,31 @@ paths:
                   type: object
                   required:
                   - name
-                  - chromosome_id
-                  - inheritable_type
-                  - inheritable_id
+                  - type
                   properties:
                     name:
                       type: string
-                    chromosome_id:
-                      type: integer
-                    inheritable_type:
+                    type:
                       type: string
-                    inheritable_id:
-                      type: integer
-  "/alleles/{id}":
+                      description: One of Integer|Float|Boolean|Option
+                    minimum:
+                      type: number
+                      nullable: true
+                    maximum:
+                      type: number
+                      nullable: true
+                    choices:
+                      type: array
+                      items:
+                        type: string
+                      nullable: true
+  "/chromosomes/{chromosome_id}/alleles/{id}":
     parameters:
+    - name: chromosome_id
+      in: path
+      required: true
+      schema:
+        type: integer
     - name: id
       in: path
       required: true
@@ -198,7 +215,7 @@ paths:
               schema:
                 "$ref": "#/components/schemas/Allele"
         '422':
-          description: invalid request
+          description: type cannot be changed
           content:
             application/json:
               schema:
@@ -216,6 +233,19 @@ paths:
                   properties:
                     name:
                       type: string
+                    type:
+                      type: string
+                    minimum:
+                      type: number
+                      nullable: true
+                    maximum:
+                      type: number
+                      nullable: true
+                    choices:
+                      type: array
+                      items:
+                        type: string
+                      nullable: true
     delete:
       summary: Delete allele
       tags:

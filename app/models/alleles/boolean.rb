@@ -13,5 +13,9 @@ module Alleles
     def to_s
       'boolean'
     end
+
+    def to_hsh
+      {}
+    end
   end
 end

@@ -120,7 +120,9 @@ RSpec.describe 'TGenetics API', openapi_spec: 'v1/swagger.yaml', type: :request 
     end
   end
 
-  path '/alleles' do
+  path '/chromosomes/{chromosome_id}/alleles' do
+    parameter name: :chromosome_id, in: :path, type: :integer
+
     get 'List alleles' do
       tags 'Alleles'
       produces 'application/json'
@@ -128,9 +130,10 @@ RSpec.describe 'TGenetics API', openapi_spec: 'v1/swagger.yaml', type: :request 
       response '200', 'alleles listed' do
         schema type: :array, items: { '$ref' => '#/components/schemas/Allele' }
 
-        before do
+        let(:chromosome_id) do
           chromosome = Chromosome.create!(name: 'experiment 1')
           chromosome.alleles << Allele.new_with_integer(name: 'legs', minimum: 1, maximum: 50)
+          chromosome.id
         end
 
         run_test!
@@ -147,46 +150,52 @@ RSpec.describe 'TGenetics API', openapi_spec: 'v1/swagger.yaml', type: :request 
         properties: {
           allele: {
             type: :object,
-            required: %i[name chromosome_id inheritable_type inheritable_id],
+            required: %i[name type],
             properties: {
               name: { type: :string },
-              chromosome_id: { type: :integer },
-              inheritable_type: { type: :string },
-              inheritable_id: { type: :integer }
+              type: { type: :string, description: 'One of Integer|Float|Boolean|Option' },
+              minimum: { type: :number, nullable: true },
+              maximum: { type: :number, nullable: true },
+              choices: { type: :array, items: { type: :string }, nullable: true }
             }
           }
         }
       }
 
-      response '201', 'allele created' do
+      response '201', 'integer allele created' do
         schema '$ref' => '#/components/schemas/Allele'
 
-        let(:chromosome_record) { Chromosome.create!(name: 'experiment 1') }
-        let(:integer_record) { Alleles::Integer.create!(minimum: 1, maximum: 50) }
-        let(:allele) do
-          {
-            allele: {
-              name: 'legs',
-              chromosome_id: chromosome_record.id,
-              inheritable_type: 'Alleles::Integer',
-              inheritable_id: integer_record.id
-            }
-          }
-        end
+        let(:chromosome) { Chromosome.create!(name: 'experiment 1') }
+        let(:chromosome_id) { chromosome.id }
+        let(:allele) { { allele: { name: 'legs', type: 'Integer', minimum: 1, maximum: 50 } } }
+
+        run_test!
+      end
+
+      response '201', 'option allele created' do
+        schema '$ref' => '#/components/schemas/Allele'
+
+        let(:chromosome) { Chromosome.create!(name: 'experiment 1') }
+        let(:chromosome_id) { chromosome.id }
+        let(:allele) { { allele: { name: 'color', type: 'Option', choices: %w[green blue] } } }
 
         run_test!
       end
 
       response '422', 'invalid request' do
         schema '$ref' => '#/components/schemas/Errors'
-        let(:allele) { { allele: { name: '' } } }
+
+        let(:chromosome) { Chromosome.create!(name: 'experiment 1') }
+        let(:chromosome_id) { chromosome.id }
+        let(:allele) { { allele: { name: 'legs', type: 'Integer' } } }
 
         run_test!
       end
     end
   end
 
-  path '/alleles/{id}' do
+  path '/chromosomes/{chromosome_id}/alleles/{id}' do
+    parameter name: :chromosome_id, in: :path, type: :integer
     parameter name: :id, in: :path, type: :integer
 
     get 'Show allele' do
@@ -196,15 +205,16 @@ RSpec.describe 'TGenetics API', openapi_spec: 'v1/swagger.yaml', type: :request 
       response '200', 'allele found' do
         schema '$ref' => '#/components/schemas/Allele'
 
-        let(:id) do
-          chromosome = Chromosome.create!(name: 'experiment 1')
-          (chromosome.alleles << Allele.new_with_integer(name: 'legs', minimum: 1, maximum: 50)).last.id
-        end
+        let(:chromosome) { Chromosome.create!(name: 'experiment 1') }
+        let(:created) { (chromosome.alleles << Allele.new_with_integer(name: 'legs', minimum: 1, maximum: 50)).last }
+        let(:chromosome_id) { chromosome.id }
+        let(:id) { created.id }
 
         run_test!
       end
 
       response '404', 'not found' do
+        let(:chromosome_id) { Chromosome.create!(name: 'experiment 1').id }
         let(:id) { 0 }
 
         run_test!
@@ -222,7 +232,11 @@ RSpec.describe 'TGenetics API', openapi_spec: 'v1/swagger.yaml', type: :request 
           allele: {
             type: :object,
             properties: {
-              name: { type: :string }
+              name: { type: :string },
+              type: { type: :string },
+              minimum: { type: :number, nullable: true },
+              maximum: { type: :number, nullable: true },
+              choices: { type: :array, items: { type: :string }, nullable: true }
             }
           }
         }
@@ -231,25 +245,23 @@ RSpec.describe 'TGenetics API', openapi_spec: 'v1/swagger.yaml', type: :request 
       response '200', 'allele updated' do
         schema '$ref' => '#/components/schemas/Allele'
 
-        let(:existing) do
-          chromosome = Chromosome.create!(name: 'experiment 1')
-          (chromosome.alleles << Allele.new_with_integer(name: 'legs', minimum: 1, maximum: 50)).last
-        end
+        let(:chromosome) { Chromosome.create!(name: 'experiment 1') }
+        let(:existing) { (chromosome.alleles << Allele.new_with_integer(name: 'legs', minimum: 1, maximum: 50)).last }
+        let(:chromosome_id) { chromosome.id }
         let(:id) { existing.id }
-        let(:allele) { { allele: { name: 'number_of_legs' } } }
+        let(:allele) { { allele: { minimum: 2, maximum: 60 } } }
 
         run_test!
       end
 
-      response '422', 'invalid request' do
+      response '422', 'type cannot be changed' do
         schema '$ref' => '#/components/schemas/Errors'
 
-        let(:existing) do
-          chromosome = Chromosome.create!(name: 'experiment 1')
-          (chromosome.alleles << Allele.new_with_integer(name: 'legs', minimum: 1, maximum: 50)).last
-        end
+        let(:chromosome) { Chromosome.create!(name: 'experiment 1') }
+        let(:existing) { (chromosome.alleles << Allele.new_with_integer(name: 'legs', minimum: 1, maximum: 50)).last }
+        let(:chromosome_id) { chromosome.id }
         let(:id) { existing.id }
-        let(:allele) { { allele: { name: '' } } }
+        let(:allele) { { allele: { type: 'Float' } } }
 
         run_test!
       end
@@ -260,10 +272,10 @@ RSpec.describe 'TGenetics API', openapi_spec: 'v1/swagger.yaml', type: :request 
       produces 'application/json'
 
       response '204', 'allele deleted' do
-        let(:id) do
-          chromosome = Chromosome.create!(name: 'experiment 1')
-          (chromosome.alleles << Allele.new_with_integer(name: 'legs', minimum: 1, maximum: 50)).last.id
-        end
+        let(:chromosome) { Chromosome.create!(name: 'experiment 1') }
+        let(:existing) { (chromosome.alleles << Allele.new_with_integer(name: 'legs', minimum: 1, maximum: 50)).last }
+        let(:chromosome_id) { chromosome.id }
+        let(:id) { existing.id }
 
         run_test!
       end
