@@ -33,6 +33,10 @@ group :development, :test do
   gem 'timecop'
   gem 'webdrivers'
   gem 'packwerk'
+
+  gem 'rswag-api'
+  gem 'rswag-ui'
+  gem 'rswag-specs'
 end
 
 group :development do
