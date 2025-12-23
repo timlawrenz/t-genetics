@@ -345,6 +345,23 @@ paths:
                 type: array
                 items:
                   "$ref": "#/components/schemas/Generation"
+    post:
+      summary: Create first generation
+      tags:
+      - Generations
+      responses:
+        '201':
+          description: generation created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Generation"
+        '409':
+          description: generation already exists
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Errors"
   "/chromosomes/{chromosome_id}/generations/{id}":
     parameters:
     - name: chromosome_id

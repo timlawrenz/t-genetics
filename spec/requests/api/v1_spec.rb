@@ -352,6 +352,33 @@ RSpec.describe 'TGenetics API', openapi_spec: 'v1/swagger.yaml', type: :request 
         run_test!
       end
     end
+
+    post 'Create first generation' do
+      tags 'Generations'
+      produces 'application/json'
+
+      response '201', 'generation created' do
+        schema '$ref' => '#/components/schemas/Generation'
+
+        let(:chromosome_id) do
+          Chromosome.create!(name: 'experiment 1').id
+        end
+
+        run_test!
+      end
+
+      response '409', 'generation already exists' do
+        schema '$ref' => '#/components/schemas/Errors'
+
+        let(:chromosome_id) do
+          chromosome = Chromosome.create!(name: 'experiment 1')
+          chromosome.generations.create!(iteration: 1)
+          chromosome.id
+        end
+
+        run_test!
+      end
+    end
   end
 
   path '/chromosomes/{chromosome_id}/generations/{id}' do

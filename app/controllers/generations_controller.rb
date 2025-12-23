@@ -15,6 +15,18 @@ class GenerationsController < ApplicationController
     render json: generation.to_hsh
   end
 
+  # Bootstrap the first generation.
+  def create
+    if @chromosome.generations.exists?
+      return render json: { errors: { generation: 'already exists for this chromosome; use procreate' } }, status: :conflict
+    end
+
+    generation = @chromosome.generations.create!(iteration: 1)
+    20.times { Organisms::Create.call(generation:) }
+
+    render json: generation.to_hsh, status: :created
+  end
+
   def procreate
     parent_generation = @chromosome.generations.find(params[:id])
     offspring_generation = Generation.create(chromosome: @chromosome)
