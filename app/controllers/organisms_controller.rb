@@ -17,7 +17,6 @@ class OrganismsController < ApplicationController
   end
 
   def update
-    puts params.inspect
     organism = Organism.find(params[:id])
     if organism.update(organism_params)
       render json: organism.to_hsh
