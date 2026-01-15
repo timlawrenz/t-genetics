@@ -20,7 +20,7 @@ class Organism < ApplicationRecord
   end
 
   def to_hsh
-    values.reload.includes(:allele).sort_by(&:name).each_with_object({}) do |value, result|
+    values.reload.includes(:allele).sort_by(&:name).each_with_object({ id: }) do |value, result|
       result[value.allele.name.to_sym] = value.data
     end
   end
