@@ -4,6 +4,11 @@ require 'rails_helper'
 
 RSpec.describe Organisms::Clone do
   describe '.call' do
+    subject(:command_call) do
+      described_class.call(organism: original_organism,
+                           target_generation: original_organism.generation)
+    end
+
     let!(:chromosome) { FactoryBot.create(:chromosome) }
     let!(:generation) { FactoryBot.create(:generation, chromosome:) }
     let!(:original_organism) { FactoryBot.create(:organism, generation:) }
@@ -32,8 +37,6 @@ RSpec.describe Organisms::Clone do
       original_organism.reload
     end
 
-    subject(:command_call) { described_class.call(organism: original_organism, target_generation: original_organism.generation) }
-
     context 'when the original organism has values' do
       it 'succeeds' do
         expect(command_call).to be_success
@@ -59,7 +62,7 @@ RSpec.describe Organisms::Clone do
         cloned_organism = command_call.dolly_clone
 
         expect(cloned_organism.values.count).to eq original_organism.values.count
-        expect(cloned_organism.to_hsh).to eq original_organism.to_hsh
+        expect(cloned_organism.to_hsh.except(:id)).to eq original_organism.to_hsh.except(:id)
       end
 
       it 'creates new value records for the clone, not re-using old ones' do
@@ -83,11 +86,13 @@ RSpec.describe Organisms::Clone do
       end
     end
 
-
     context 'when original organism has no values' do
-      let!(:organism_no_values) { FactoryBot.create(:organism, generation:) }
+      subject(:command_call_no_values) do
+        described_class.call(organism: organism_no_values,
+                             target_generation: organism_no_values.generation)
+      end
 
-      subject(:command_call_no_values) { described_class.call(organism: organism_no_values, target_generation: organism_no_values.generation) }
+      let!(:organism_no_values) { FactoryBot.create(:organism, generation:) }
 
       before do
         # Ensure this organism truly has no values

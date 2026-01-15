@@ -47,7 +47,7 @@ RSpec.describe 'Basic Actions' do # rubocop:disable RSpec/DescribeClass
             end
 
             it 'shows the data' do
-              expect(organism.reload.to_hsh)
+              expect(organism.reload.to_hsh.except(:id))
                 .to eq({ color: 'blue', legs: 7, height: 3.5, flies: true })
             end
 
